@@ -2,7 +2,6 @@
 
 #include <GL/glew.h>
 #include "VAO.h"
-#include "ShaderProgram.h"
 
 class Mesh
 {

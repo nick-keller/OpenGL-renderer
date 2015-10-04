@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
 #include "Mesh.h"
+#include "ShaderProgram.h"
 
 class Scene
 {
@@ -15,6 +16,7 @@ public:
 
 private:
 	void updateProjectionMatrix();
+	void createAxis();
 
 private:
 	glm::mat4 m_projectionMatrix;
@@ -22,6 +24,8 @@ private:
 	double m_ratio;
 	double m_near;
 	double m_far;
+	VAO m_axis;
 	Mesh m_mesh;
+	ShaderProgram m_shader;
 };
 

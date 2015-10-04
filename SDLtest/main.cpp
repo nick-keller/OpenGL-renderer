@@ -23,7 +23,9 @@ int WinMain()
 	glContext = SDL_GL_CreateContext(window);
 	glewInit();
 
-	Camera camera = Camera(glm::vec3(5, 5, 5), glm::vec3(-1, -1, -1));
+	glEnable(GL_DEPTH_TEST);
+
+	Camera camera = Camera(glm::vec3(3, 3, 3), glm::vec3(-1, -1, -1));
 	Scene scene = Scene(800.0/600.0);
 
 	do
@@ -33,7 +35,7 @@ int WinMain()
 		delta = time - prevTime;
 		prevTime = time;
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		scene.render(camera);
 

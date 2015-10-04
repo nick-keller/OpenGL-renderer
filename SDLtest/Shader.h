@@ -14,12 +14,12 @@ public:
 	GLuint getId();
 	bool isShader();
 	void deleteShader();
-	void compileShader();
-	void setSource(std::string source);
 
 private:
 	bool compile();
-	bool readFile(std::string& content);
+	bool loadFromFile();
+	bool compileShader();
+	std::string getLog();
 
 private:
 	std::string m_filePath;

@@ -13,6 +13,11 @@ Camera::~Camera()
 {
 }
 
+glm::mat4 Camera::getViewMatrix() const
+{
+	return m_viewMatrix;
+}
+
 void Camera::updateViewMatrix()
 {
 	m_viewMatrix = glm::lookAt(m_position, m_position + m_lookAt, m_up);

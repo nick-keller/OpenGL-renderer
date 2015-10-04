@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <map>
 #include "VBO.h"
@@ -10,7 +11,7 @@ class VAO
 {
 public:
 
-	enum Prop {VERTICES, COLORS, NORMALS, UV, FACES};
+	enum Prop {VERTICES, NORMALS, UV, COLORS, FACES};
 
 	VAO();
 	~VAO();
@@ -25,6 +26,9 @@ public:
 	void bind();
 	void unbind();
 
+	void drawTriangles();
+	void drawLines();
+
 	void defineAttribute(Prop attribute, GLint perVertex, GLenum type);
 	void enableAttribute(Prop attribute);
 	void disableAttribute(Prop attribute);
@@ -35,6 +39,7 @@ private:
 
 private:
 	GLuint m_id;
+	GLuint m_verticesCount;
 	GLuint m_facesCount;
 	std::map<Prop, VBO*> m_vbos;
 };

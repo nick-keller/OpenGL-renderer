@@ -3,7 +3,7 @@
 
 
 VAO::VAO() :
-	m_facesCount(0)
+	m_facesCount(0), m_verticesCount(0)
 {
 	glGenVertexArrays(1, &m_id);
 }
@@ -59,6 +59,7 @@ void VAO::store(Prop attribute, const GLvoid * data, int verticesLength, GLint p
 
 void VAO::storeVertices(std::vector<glm::vec3> vertices, GLenum usage)
 {
+	m_verticesCount = vertices.size();
 	store(VERTICES, &vertices[0].x, vertices.size(), 3, GL_FLOAT, usage);
 }
 
@@ -81,6 +82,20 @@ void VAO::bind()
 void VAO::unbind()
 {
 	glBindVertexArray(0);
+}
+
+void VAO::drawTriangles()
+{
+	bind();
+	glDrawElements(GL_TRIANGLES, m_facesCount * 3, GL_UNSIGNED_INT, (void*)0);
+	unbind();
+}
+
+void VAO::drawLines()
+{
+	bind();
+	glDrawArrays(GL_LINES, 0, m_verticesCount);
+	unbind();
 }
 
 void VAO::defineAttribute(Prop attribute, GLint perVertex, GLenum type)

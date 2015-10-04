@@ -5,20 +5,26 @@
 Mesh::Mesh()
 {
 	std::vector<glm::vec3> vertices;
-	vertices.push_back(glm::vec3(.5, .5, 0));
-	vertices.push_back(glm::vec3(-.5, .5, 0));
-	vertices.push_back(glm::vec3(-.5, -.5, 0));
-	vertices.push_back(glm::vec3(.5, -.5, 0));
+	vertices.push_back(glm::vec3(0, 1, 0));
+	vertices.push_back(glm::vec3(0, 0, 0));
+	vertices.push_back(glm::vec3(1, 0, 0));
+
+	vertices.push_back(glm::vec3(0.5, 1, -0.5));
+	vertices.push_back(glm::vec3(0.5, 0, -0.5));
+	vertices.push_back(glm::vec3(0.5, 0, .5));
 
 	std::vector<glm::vec3> colors;
 	colors.push_back(glm::vec3(1., 0., 0.));
 	colors.push_back(glm::vec3(0., 1., 0.));
 	colors.push_back(glm::vec3(0., 0., 1.));
+
 	colors.push_back(glm::vec3(1., 1., 0.));
+	colors.push_back(glm::vec3(0., 1., 1.));
+	colors.push_back(glm::vec3(1., 0., 1.));
 
 	std::vector<glm::uvec3> faces;
+	faces.push_back(glm::uvec3(3, 4, 5));
 	faces.push_back(glm::uvec3(0, 1, 2));
-	faces.push_back(glm::uvec3(0, 2, 3));
 
 	m_data.storeVertices(vertices);
 	m_data.storeFaces(faces);
@@ -42,7 +48,5 @@ VAO Mesh::getVao()
 
 void Mesh::render()
 {
-	m_data.bind();
-	glDrawElements(GL_TRIANGLES, m_data.getFacesCount() * 3, GL_UNSIGNED_INT, (void*)0);
-	m_data.unbind();
+	m_data.drawTriangles();
 }

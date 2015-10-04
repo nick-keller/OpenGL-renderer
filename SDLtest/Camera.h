@@ -9,6 +9,8 @@ public:
 	Camera(glm::vec3 position = glm::vec3(0, 0, 0), glm::vec3 lookAt = glm::vec3(0, 1, 0), glm::vec3 up = glm::vec3(0, 0, 1));
 	~Camera();
 
+	glm::mat4 getViewMatrix() const;
+
 private:
 	void updateViewMatrix();
 

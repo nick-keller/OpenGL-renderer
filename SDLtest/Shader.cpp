@@ -3,12 +3,15 @@
 Shader::Shader(std::string filePath, GLenum type) :
 	m_filePath(filePath), m_type(type), m_id(0)
 {
-	compile();
+	if (!compile()) {
+		deleteShader();
+	}
 }
 
 
 Shader::~Shader()
 {
+	deleteShader();
 }
 
 bool Shader::compile()
@@ -20,59 +23,34 @@ bool Shader::compile()
 
 	m_id = glCreateShader(m_type);
 
-	// Read file
-	std::ifstream file(m_filePath);
-
-	if (!file) {
-		std::cout << "File " << m_filePath << " not found" << std::endl;
-		deleteShader();
-
+	if (!loadFromFile()) {
+		std::cout << "File " << m_filePath << " not found." << std::endl;
 		return false;
 	}
 
-	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	file.close();
-
-	// Send and compile
-	setSource(content);
-	compileShader();
-
-
-	// Check err
-	GLint isCompiled = 0;
-	glGetShaderiv(m_id, GL_COMPILE_STATUS, &isCompiled);
-
-	if (isCompiled == GL_FALSE)
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
-
-		char *errorLog = new char[maxLength + 1];
-		glGetShaderInfoLog(m_id, maxLength, &maxLength, errorLog);
-		errorLog[maxLength] = '\0';
-
-		std::cout << errorLog << std::endl;
-
-		delete[] errorLog;
-		glDeleteShader(m_id);
-
+	if (!compileShader()) {
+		std::cout << getLog() << std::endl;
 		return false;
 	}
 
 	return true;
 }
 
-bool Shader::readFile(std::string & content)
+bool Shader::loadFromFile()
 {
+	// Load file
 	std::ifstream file(m_filePath);
 
 	if (!file) {
-		std::cout << "File " << m_filePath << " not found" << std::endl;
 		return false;
 	}
 
-	content = std::string((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	std::string source = std::string((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 	file.close();
+
+	// Upload source to GPU
+	const GLchar* sourceCode = source.c_str();
+	glShaderSource(m_id, 1, &sourceCode, 0);
 
 	return true;
 }
@@ -92,13 +70,28 @@ void Shader::deleteShader()
 	glDeleteShader(m_id);
 }
 
-void Shader::compileShader()
+bool Shader::compileShader()
 {
 	glCompileShader(m_id);
+
+	// Check err
+	GLint isCompiled = 0;
+	glGetShaderiv(m_id, GL_COMPILE_STATUS, &isCompiled);
+
+	return isCompiled == GL_TRUE;
 }
 
-void Shader::setSource(std::string source)
+std::string Shader::getLog()
 {
-	const GLchar* sourceCode = source.c_str();
-	glShaderSource(m_id, 1, &sourceCode, 0);
+	GLint maxLength = 0;
+	glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
+
+	char *errorLog = new char[maxLength + 1];
+	glGetShaderInfoLog(m_id, maxLength, &maxLength, errorLog);
+	errorLog[maxLength] = '\0';
+
+	std::string log(errorLog);
+	delete[] errorLog;
+
+	return log;
 }
