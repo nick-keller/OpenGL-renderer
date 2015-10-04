@@ -29,86 +29,63 @@ GLuint VAO::getFacesCount()
 	return m_facesCount;
 }
 
-void VAO::store(Prop attribute, const GLvoid * data, int verticesLength, GLint perVertex, GLenum type, GLenum usage, GLenum target,  GLboolean normalized)
+void VAO::store(Prop attribute, const GLvoid * data, int verticesLength, GLint perVertex, GLenum type, GLenum usage, GLenum target)
 {
 	bind();
-
-	// Compute buffer size
-	GLsizeiptr size = verticesLength * perVertex * sizeOf(type);
 
 	// Delete any previous VBO
 	if (m_vbos.count(attribute)) {
 		delete m_vbos[attribute];
 	}
 
-	// Create a VBO to store the data in
+	// Create VBO and store data
 	m_vbos[attribute] = new VBO(target);
-	m_vbos[attribute]->setData(data, size, usage);
+	m_vbos[attribute]->setData(data, verticesLength * perVertex * sizeOf(type), usage);
 
-	// Define attribute exept for vertices indices wich are not attributes (GL_ELEMENT_ARRAY_BUFFER)
+	// Define attributes
 	if (target == GL_ARRAY_BUFFER) {
-		defineAttribute(attribute, perVertex, type, normalized);
+		defineAttribute(attribute, perVertex, type);
+		enableAttribute(attribute);
+
+		m_vbos[attribute]->unbind();
+
+		if (m_vbos.count(FACES)) {
+			m_vbos[FACES]->bind();
+		}
 	}
 
-	// Unbind everything
-	m_vbos[attribute]->unbind();
 	unbind();
 }
 
-void VAO::storeVertices(std::vector<glm::vec3> vertices)
+void VAO::storeVertices(std::vector<glm::vec3> vertices, GLenum usage)
 {
-	store(VERTICES, &vertices[0].x, vertices.size(), 3, GL_FLOAT);
+	store(VERTICES, &vertices[0].x, vertices.size(), 3, GL_FLOAT, usage);
 }
 
-void VAO::storeFaces(std::vector<glm::uvec3> faces)
+void VAO::storeColors(std::vector<glm::vec3> colors, GLenum usage)
+{
+	store(COLORS, &colors[0].x, colors.size(), 3, GL_FLOAT, usage);
+}
+
+void VAO::storeFaces(std::vector<glm::uvec3> faces, GLenum usage)
 {
 	m_facesCount = faces.size();
-	store(FACES, &faces[0].x, faces.size(), 3, GL_UNSIGNED_INT, GL_STATIC_DRAW, GL_ELEMENT_ARRAY_BUFFER);
+	store(FACES, &faces[0].x, faces.size(), 3, GL_UNSIGNED_INT, usage, GL_ELEMENT_ARRAY_BUFFER);
 }
 
-void VAO::bind(bool enableAttributes)
+void VAO::bind()
 {
 	glBindVertexArray(m_id);
-
-	if (enableAttributes) {
-
-		// Bind VBO wich contains vertices indices
-		if (m_vbos.count(FACES)) {
-			m_vbos[FACES]->bind();
-		}
-
-		// Enable each attribute
-		for (std::map<Prop, VBO*>::iterator it = m_vbos.begin(); it != m_vbos.end(); ++it) {
-			if (it->first != FACES) {
-				enableAttribute(it->first);
-			}
-		}
-	}
 }
 
-void VAO::unbind(bool disableAttributes)
+void VAO::unbind()
 {
-	if (disableAttributes) {
-
-		// Disable each attribute
-		for (std::map<Prop, VBO*>::iterator it = m_vbos.begin(); it != m_vbos.end(); ++it) {
-			if (it->first != FACES) {
-				disableAttribute(it->first);
-			}
-		}
-
-		// Unind VBO wich contains vertices indices
-		if (m_vbos.count(FACES)) {
-			m_vbos[FACES]->bind();
-		}
-	}
-
 	glBindVertexArray(0);
 }
 
-void VAO::defineAttribute(Prop attribute, GLint perVertex, GLenum type, GLboolean normalized)
+void VAO::defineAttribute(Prop attribute, GLint perVertex, GLenum type)
 {
-	glVertexAttribPointer(attribute, perVertex, type, normalized, 0, 0);
+	glVertexAttribPointer(attribute, perVertex, type, GL_FALSE, 0, 0);
 }
 
 void VAO::enableAttribute(Prop attribute)

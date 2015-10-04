@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include "VAO.h"
+#include "ShaderProgram.h"
 
 class Mesh
 {
@@ -16,8 +17,5 @@ public:
 
 private:
 	VAO m_data;
-	GLuint m_vao;
-	GLuint m_vboVertices;
-	GLuint m_vboFaces;
 };
 
