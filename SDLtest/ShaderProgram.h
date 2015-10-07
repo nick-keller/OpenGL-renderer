@@ -3,6 +3,7 @@
 #include <map>
 #include "Shader.h"
 #include "VAO.h"
+#include "Texture.h"
 
 class ShaderProgram
 {
@@ -15,6 +16,9 @@ public:
 
 	bool isProgram();
 	void deleteProgram();
+
+	void updateUniform(std::string name, Texture::Type type);
+	void updateUniform(std::string name, glm::vec3 vector);
 
 	void updateUniform(std::string name, glm::mat4& matrix);
 	void updateUniform(GLint location, glm::mat4& matrix);

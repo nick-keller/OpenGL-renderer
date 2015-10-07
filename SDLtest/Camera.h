@@ -11,6 +11,8 @@ public:
 
 	glm::mat4 getViewMatrix() const;
 
+	void rotate(float angle, glm::vec3 axis);
+
 private:
 	void updateViewMatrix();
 

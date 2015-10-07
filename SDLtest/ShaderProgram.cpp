@@ -7,11 +7,20 @@ ShaderProgram::ShaderProgram(std::string vertexFilePath, std::string fragmentFil
 {
 	if (!compile()) {
 		deleteProgram();
+		return;
 	}
 
+	// Cache those for quick access
 	m_projectionMatrix = getUniformLocation("projection");
 	m_viewMatrix = getUniformLocation("view");
 	m_modelMatrix = getUniformLocation("model");
+
+	// Bind texture units
+	use();
+	updateUniform("textureDiffuse", Texture::DIFFUSE);
+	updateUniform("textureSpecular", Texture::SPECULAR);
+	updateUniform("textureNormal", Texture::NORMAL);
+	stop();
 }
 
 
@@ -29,6 +38,7 @@ bool ShaderProgram::compile()
 
 	m_id = glCreateProgram();
 
+	// If one shader did not compile stop here
 	if (!m_vertexShader.isShader() || !m_fragmentShader.isShader()) {
 		return false;
 	}
@@ -40,6 +50,7 @@ bool ShaderProgram::compile()
 	bindAttribLocation(VAO::COLORS, "in_Color");
 	bindAttribLocation(VAO::NORMALS, "in_Normal");
 	bindAttribLocation(VAO::UV, "in_TexCoord");
+	bindAttribLocation(VAO::TANGENTS, "in_Tangent");
 
 	if (!link())
 	{
@@ -104,6 +115,16 @@ bool ShaderProgram::isProgram()
 void ShaderProgram::deleteProgram()
 {
 	glDeleteProgram(m_id);
+}
+
+void ShaderProgram::updateUniform(std::string name, Texture::Type type)
+{
+	glUniform1i(getUniformLocation(name), type);
+}
+
+void ShaderProgram::updateUniform(std::string name, glm::vec3 vector)
+{
+	glUniform3f(getUniformLocation(name), vector.x, vector.y, vector.z);
 }
 
 void ShaderProgram::updateUniform(std::string name, glm::mat4& matrix)

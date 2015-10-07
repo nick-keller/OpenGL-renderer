@@ -68,6 +68,21 @@ void VAO::storeColors(std::vector<glm::vec3> colors, GLenum usage)
 	store(COLORS, &colors[0].x, colors.size(), 3, GL_FLOAT, usage);
 }
 
+void VAO::storeNormals(std::vector<glm::vec3> normals, GLenum usage)
+{
+	store(NORMALS, &normals[0].x, normals.size(), 3, GL_FLOAT, usage);
+}
+
+void VAO::storeTangents(std::vector<glm::vec3> tangents, GLenum usage)
+{
+	store(TANGENTS, &tangents[0].x, tangents.size(), 3, GL_FLOAT, usage);
+}
+
+void VAO::storeUvs(std::vector<glm::vec2> uvs, GLenum usage)
+{
+	store(UV, &uvs[0].x, uvs.size(), 2, GL_FLOAT, usage);
+}
+
 void VAO::storeFaces(std::vector<glm::uvec3> faces, GLenum usage)
 {
 	m_facesCount = faces.size();
@@ -86,9 +101,7 @@ void VAO::unbind()
 
 void VAO::drawTriangles()
 {
-	bind();
 	glDrawElements(GL_TRIANGLES, m_facesCount * 3, GL_UNSIGNED_INT, (void*)0);
-	unbind();
 }
 
 void VAO::drawLines()

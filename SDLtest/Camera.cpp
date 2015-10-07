@@ -18,6 +18,11 @@ glm::mat4 Camera::getViewMatrix() const
 	return m_viewMatrix;
 }
 
+void Camera::rotate(float angle, glm::vec3 axis)
+{
+	m_viewMatrix = glm::rotate(m_viewMatrix, angle, axis);
+}
+
 void Camera::updateViewMatrix()
 {
 	m_viewMatrix = glm::lookAt(m_position, m_position + m_lookAt, m_up);

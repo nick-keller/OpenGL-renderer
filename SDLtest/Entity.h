@@ -7,8 +7,10 @@
 class Entity
 {
 public:
-	Entity();
+	Entity(Mesh* mesh);
 	~Entity();
+
+	glm::mat4 getModelMatrix() const;
 
 private:
 	Mesh* m_mesh;

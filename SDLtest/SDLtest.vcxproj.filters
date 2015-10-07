@@ -51,6 +51,9 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -77,12 +80,33 @@
     <ClInclude Include="Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.glsl">
+    <None Include="simpleColor.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="vert.glsl">
+    <None Include="simpleColor.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="simpleShadow.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="simpleShadow.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="simpleTextured.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="simpleTextured.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="forceColor.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="forceColor.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

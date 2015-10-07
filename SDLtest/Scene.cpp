@@ -3,8 +3,13 @@
 
 
 Scene::Scene(double ratio, double angle, double near, double far) :
-	m_ratio(ratio), m_angle(angle), m_near(near), m_far(far), m_shader("vert.glsl", "frag.glsl")
+	m_ratio(ratio), m_angle(angle), m_near(near), m_far(far)
 {
+	loadShaders();
+	loadMeshs();
+
+	m_meshEntities[m_meshs["mesh1"]].push_back(new Entity(m_meshs["mesh1"]));
+
 	updateProjectionMatrix();
 	createAxis();
 }
@@ -12,24 +17,33 @@ Scene::Scene(double ratio, double angle, double near, double far) :
 
 Scene::~Scene()
 {
+	for (ShaderList::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it) {
+		delete it->second;
+	}
+
+	for (MeshList::iterator it = m_meshs.begin(); it != m_meshs.end(); ++it) {
+		delete it->second;
+	}
 }
 
 void Scene::render(const Camera& camera)
 {
-	m_shader.use();
-	m_shader.updateViewMatrix(camera.getViewMatrix());
-	m_mesh.render();
-	m_axis.drawLines();
-	m_shader.stop();
+	drawMeshs(camera);
+	drawAxis();
+	drawNormals();
 }
 
 void Scene::updateProjectionMatrix()
 {
 	m_projectionMatrix = glm::perspective(m_angle, m_ratio, m_near, m_far);
 
-	m_shader.use();
-	m_shader.updateProjectionMatrix(m_projectionMatrix);
-	m_shader.stop();
+	for (ShaderList::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it) {
+		ShaderProgram* shader = it->second;
+
+		shader->use();
+		shader->updateProjectionMatrix(m_projectionMatrix);
+		shader->stop();
+	}
 }
 
 void Scene::createAxis()
@@ -48,4 +62,93 @@ void Scene::createAxis()
 
 	m_axis.storeVertices(std::vector<glm::vec3>((glm::vec3*) vertices, (glm::vec3*) vertices + 6));
 	m_axis.storeColors(std::vector<glm::vec3>((glm::vec3*) colors, (glm::vec3*) colors + 6));
+}
+
+void Scene::loadShaders()
+{
+	loadShader("simpleColor");
+	loadShader("simpleShadow");
+	loadShader("simpleTextured");
+	loadShader("forceColor");
+}
+
+void Scene::loadShader(std::string name)
+{
+	m_shaders[name] = new ShaderProgram(name + ".vert", name + ".frag");
+}
+
+void Scene::loadMeshs()
+{
+	m_meshs["mesh1"] = new Mesh("sphere.obj", "stone");
+	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["mesh1"]);
+}
+
+void Scene::drawMeshs(const Camera& camera)
+{
+	for (ShaderList::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it) {
+		ShaderProgram* shader = it->second;
+
+		// Use shader and update view matrix
+		shader->use();
+		shader->updateViewMatrix(camera.getViewMatrix());
+
+		for (int i(0); i < m_shaderMeshs[shader].size(); ++i) {
+			Mesh* mesh = m_shaderMeshs[shader][i];
+
+			// Bind mesh
+			mesh->bind();
+
+			for (int j(0); j < m_meshEntities[mesh].size(); ++j) {
+				Entity* entity = m_meshEntities[mesh][j];
+
+				// Update model matrix and draw mesh
+				shader->updateModelMatrix(entity->getModelMatrix());
+				mesh->draw();
+			}
+
+			mesh->unbind();
+		}
+
+		shader->stop();
+	}
+}
+
+void Scene::drawAxis()
+{
+	m_shaders["simpleColor"]->use();
+	m_shaders["simpleColor"]->updateModelMatrix(glm::mat4());
+	m_axis.drawLines();
+	m_shaders["simpleColor"]->stop();
+}
+
+void Scene::drawNormals()
+{
+	m_shaders["forceColor"]->use();
+
+	for (MeshList::iterator it = m_meshs.begin(); it != m_meshs.end(); ++it) {
+		Mesh* mesh = it->second;
+
+		for (int j(0); j < m_meshEntities[mesh].size(); ++j) {
+			Entity* entity = m_meshEntities[mesh][j];
+
+			m_shaders["forceColor"]->updateModelMatrix(entity->getModelMatrix());
+
+			// Normals
+			m_shaders["forceColor"]->updateUniform("color", glm::vec3(0, 1, 0));
+
+			mesh->bindNormals();
+			mesh->drawNormals();
+			mesh->unbindNormals();
+
+			// Tangents
+			m_shaders["forceColor"]->updateUniform("color", glm::vec3(1, 0, 0));
+
+			mesh->bindTangents();
+			mesh->drawTangents();
+			mesh->unbindTangents();
+		}
+
+	}
+
+	m_shaders["forceColor"]->stop();
 }

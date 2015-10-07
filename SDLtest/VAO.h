@@ -11,7 +11,7 @@ class VAO
 {
 public:
 
-	enum Prop {VERTICES, NORMALS, UV, COLORS, FACES};
+	enum Prop {VERTICES, NORMALS, UV, COLORS, TANGENTS, FACES};
 
 	VAO();
 	~VAO();
@@ -21,6 +21,9 @@ public:
 
 	void storeVertices(std::vector<glm::vec3> vertices, GLenum usage = GL_STATIC_DRAW);
 	void storeColors(std::vector<glm::vec3> colors, GLenum usage = GL_STATIC_DRAW);
+	void storeNormals(std::vector<glm::vec3> normals, GLenum usage = GL_STATIC_DRAW);
+	void storeTangents(std::vector<glm::vec3> tangents, GLenum usage = GL_STATIC_DRAW);
+	void storeUvs(std::vector<glm::vec2> uvs, GLenum usage = GL_STATIC_DRAW);
 	void storeFaces(std::vector<glm::uvec3> faces, GLenum usage = GL_STATIC_DRAW);
 
 	void bind();
