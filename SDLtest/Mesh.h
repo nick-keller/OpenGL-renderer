@@ -39,5 +39,6 @@ private:
 	Texture m_diffuse;
 	Texture m_specular;
 	Texture m_normal;
+	Texture m_bump;
 };
 

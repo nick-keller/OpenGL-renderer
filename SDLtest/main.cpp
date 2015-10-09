@@ -25,7 +25,7 @@ int WinMain()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera = Camera(glm::vec3(10, 10, 10), glm::vec3(-1, -1, -1));
+	Camera camera = Camera(glm::vec3(10, 10, 0), glm::vec3(-1, -1, 0));
 	Scene scene = Scene(800.0/600.0);
 
 	do
@@ -37,7 +37,7 @@ int WinMain()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera.rotate(.01, glm::vec3(0, 0, 1));
+		camera.rotate(.05, glm::vec3(0, 0, 1));
 		scene.render(camera);
 
 		SDL_GL_SwapWindow(window);

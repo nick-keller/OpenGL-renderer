@@ -9,7 +9,7 @@
 class Texture
 {
 public:
-	enum Type {DIFFUSE, SPECULAR, NORMAL};
+	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP};
 
 	Texture(std::string filePath, Type type);
 	~Texture();

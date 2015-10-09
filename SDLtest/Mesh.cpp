@@ -5,7 +5,8 @@
 Mesh::Mesh(std::string filePath, std::string textureName) :
 	m_diffuse(textureName + "_diffuse.jpg", Texture::DIFFUSE), 
 	m_specular(textureName + "_specular.jpg", Texture::SPECULAR), 
-	m_normal(textureName + "_normal.jpg", Texture::NORMAL)
+	m_normal(textureName + "_normal.jpg", Texture::NORMAL),
+	m_bump(textureName + "_bump.jpg", Texture::BUMP)
 {
 	LoadFromFile(filePath);
 }
@@ -21,6 +22,7 @@ void Mesh::bind()
 	m_diffuse.bind();
 	m_specular.bind();
 	m_normal.bind();
+	m_bump.bind();
 }
 
 void Mesh::unbind()
@@ -195,10 +197,13 @@ void Mesh::setData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& nor
 
 	if (normals.size()) {
 		m_data.storeNormals(normals);
-		std::vector<glm::vec3> tangents = computeTangents(vertices, normals, uvs, faces);
-		m_data.storeTangents(tangents);
-		m_tangents.storeVertices(computeNormalsVertices(vertices, tangents, 7));
 		m_normals.storeVertices(computeNormalsVertices(vertices, normals, 7));
+
+		if (uvs.size()) {
+			std::vector<glm::vec3> tangents = computeTangents(vertices, normals, uvs, faces);
+			m_data.storeTangents(tangents);
+			m_tangents.storeVertices(computeNormalsVertices(vertices, tangents, 7));
+		}
 	}
 
 	if (uvs.size()) {

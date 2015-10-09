@@ -30,7 +30,7 @@ void Scene::render(const Camera& camera)
 {
 	drawMeshs(camera);
 	drawAxis();
-	drawNormals();
+	//drawNormals();
 }
 
 void Scene::updateProjectionMatrix()
@@ -79,7 +79,7 @@ void Scene::loadShader(std::string name)
 
 void Scene::loadMeshs()
 {
-	m_meshs["mesh1"] = new Mesh("sphere.obj", "stone");
+	m_meshs["mesh1"] = new Mesh("cube.obj", "bricks");
 	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["mesh1"]);
 }
 

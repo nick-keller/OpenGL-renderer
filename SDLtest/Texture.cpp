@@ -11,7 +11,7 @@ Texture::Texture(std::string filePath, Type type) :
 		glGenTextures(1, &m_id);
 
 		store(surface);
-		setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		SDL_FreeSurface(surface);
@@ -76,6 +76,7 @@ void Texture::store(SDL_Surface * surface)
 	bind();
 
 	glTexImage2D(GL_TEXTURE_2D, 0, m_hasAlpha ? GL_RGBA : GL_RGB, surface->w, surface->h, 0, m_format, GL_UNSIGNED_BYTE, surface->pixels);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	unbind();
 }

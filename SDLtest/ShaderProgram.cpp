@@ -20,6 +20,7 @@ ShaderProgram::ShaderProgram(std::string vertexFilePath, std::string fragmentFil
 	updateUniform("textureDiffuse", Texture::DIFFUSE);
 	updateUniform("textureSpecular", Texture::SPECULAR);
 	updateUniform("textureNormal", Texture::NORMAL);
+	updateUniform("textureBump", Texture::BUMP);
 	stop();
 }
 
