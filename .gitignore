@@ -2,3 +2,9 @@ Debug/
 SDLtest/Debug/
 SDLtest/x64/
 x64/
+SDLtest.sdf
+SDLtest.opensdf
+SDLtest/SDLtest.vcxproj.user
+SDLtest/SDLtest.vcxproj
+SDLtest.v12.suo
+SDLtest/packages.config
