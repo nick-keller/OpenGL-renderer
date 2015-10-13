@@ -2,8 +2,8 @@
 
 
 
-VBO::VBO(GLenum target) :
-	m_target(target)
+VBO::VBO(GLenum pTarget) :
+	m_target(pTarget)
 {
 	glGenBuffers(1, &m_id);
 }
@@ -19,11 +19,11 @@ GLuint VBO::getId()
 	return m_id;
 }
 
-void VBO::setData(const GLvoid * data, GLsizeiptr size, GLenum usage)
+void VBO::setData(const GLvoid * pData, GLsizeiptr pSize, GLenum pUsage)
 {
 	bind();
 
-	glBufferData(m_target, size, data, usage);
+	glBufferData(m_target, pSize, pData, pUsage);
 }
 
 void VBO::bind()

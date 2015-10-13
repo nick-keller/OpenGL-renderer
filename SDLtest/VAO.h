@@ -7,6 +7,9 @@
 #include <map>
 #include "VBO.h"
 
+using namespace std;
+using namespace glm;
+
 class VAO
 {
 public:
@@ -19,12 +22,12 @@ public:
 	GLuint getId();
 	GLuint getFacesCount();
 
-	void storeVertices(std::vector<glm::vec3> vertices, GLenum usage = GL_STATIC_DRAW);
-	void storeColors(std::vector<glm::vec3> colors, GLenum usage = GL_STATIC_DRAW);
-	void storeNormals(std::vector<glm::vec3> normals, GLenum usage = GL_STATIC_DRAW);
-	void storeTangents(std::vector<glm::vec3> tangents, GLenum usage = GL_STATIC_DRAW);
-	void storeUvs(std::vector<glm::vec2> uvs, GLenum usage = GL_STATIC_DRAW);
-	void storeFaces(std::vector<glm::uvec3> faces, GLenum usage = GL_STATIC_DRAW);
+	void storeVertices(vector<vec3> pVertices, GLenum pUsage = GL_STATIC_DRAW);
+	void storeColors(vector<vec3> pColors, GLenum pUsage = GL_STATIC_DRAW);
+	void storeNormals(vector<vec3> pNormals, GLenum pUsage = GL_STATIC_DRAW);
+	void storeTangents(vector<vec3> pTangents, GLenum pUsage = GL_STATIC_DRAW);
+	void storeUvs(vector<vec2> pUVs, GLenum pUsage = GL_STATIC_DRAW);
+	void storeFaces(vector<uvec3> pFaces, GLenum pUsage = GL_STATIC_DRAW);
 
 	void bind();
 	void unbind();
@@ -32,18 +35,18 @@ public:
 	void drawTriangles();
 	void drawLines();
 
-	void defineAttribute(Prop attribute, GLint perVertex, GLenum type);
-	void enableAttribute(Prop attribute);
-	void disableAttribute(Prop attribute);
+	void defineAttribute(Prop pAttribute, GLint pPerVertex, GLenum pType);
+	void enableAttribute(Prop pAttribute);
+	void disableAttribute(Prop pAttribute);
 
 private:
-	void store(Prop attribute, const GLvoid * data, int verticesLength, GLint perVertex, GLenum type, GLenum usage = GL_STATIC_DRAW, GLenum target = GL_ARRAY_BUFFER);
-	std::size_t sizeOf(GLenum type);
+	void store(Prop pAttribute, const GLvoid * pData, int pVerticesLength, GLint pPerVertex, GLenum pType, GLenum pUsage = GL_STATIC_DRAW, GLenum pTarget = GL_ARRAY_BUFFER);
+	size_t sizeOf(GLenum pType);
 
 private:
 	GLuint m_id;
 	GLuint m_verticesCount;
 	GLuint m_facesCount;
-	std::map<Prop, VBO*> m_vbos;
+	map<Prop, VBO*> m_vbos;
 };
 

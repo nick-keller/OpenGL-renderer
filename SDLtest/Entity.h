@@ -4,16 +4,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Mesh.h"
 
+using namespace glm;
+
 class Entity
 {
 public:
-	Entity(Mesh* mesh);
+	Entity(Mesh* pMesh);
 	~Entity();
 
-	glm::mat4 getModelMatrix() const;
+	mat4 getModelMatrix() const;
 
 private:
 	Mesh* m_mesh;
-	glm::mat4 m_modelMatrix;
+	mat4 m_modelMatrix;
 };
 

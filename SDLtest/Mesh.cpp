@@ -2,13 +2,13 @@
 
 
 
-Mesh::Mesh(std::string filePath, std::string textureName) :
-	m_diffuse(textureName + "_diffuse.jpg", Texture::DIFFUSE), 
-	m_specular(textureName + "_specular.jpg", Texture::SPECULAR), 
-	m_normal(textureName + "_normal.jpg", Texture::NORMAL),
-	m_bump(textureName + "_bump.jpg", Texture::BUMP)
+Mesh::Mesh(string pFilePath, string pTextureName) :
+	m_diffuse(pTextureName  + "_diffuse.jpg" , Texture::DIFFUSE),
+	m_specular(pTextureName + "_specular.jpg", Texture::SPECULAR),
+	m_normal(pTextureName   + "_normal.jpg"  , Texture::NORMAL),
+	m_bump(pTextureName     + "_bump.jpg"    , Texture::BUMP)
 {
-	LoadFromFile(filePath);
+	LoadFromFile(pFilePath);
 }
 
 
@@ -65,72 +65,71 @@ void Mesh::drawTangents()
 	m_tangents.drawLines();
 }
 
-void Mesh::LoadFromFile(std::string & filePath)
+void Mesh::LoadFromFile(string & pFilePath)
 {
-	std::ifstream file(filePath.c_str());
-	std::string line, id;
+	ifstream file(pFilePath.c_str());
+	string line, id;
 
-	std::vector <glm::vec3> objVertices;
-	std::vector <glm::vec2> objUvs;
-	std::vector <glm::vec3> objNormals;
-	std::vector <glm::uvec3> objFaces;
+	vector <vec3> objVertices;
+	vector <vec2> objUvs;
+	vector <vec3> objNormals;
+	vector <uvec3> objFaces;
 
-	std::vector <glm::vec3> finalVertices;
-	std::vector <glm::vec2> finalUvs;
-	std::vector <glm::vec3> finalNormals;
-	std::vector <glm::uvec3> finalFaces;
+	vector <vec3> finalVertices;
+	vector <vec2> finalUvs;
+	vector <vec3> finalNormals;
+	vector <uvec3> finalFaces;
 
-	while (std::getline(file, line)) {
+	while (getline(file, line)) {
 		if (line.empty()) {
 			continue;
 		}
 
-		std::stringstream data(line);
+		stringstream data(line);
 
 		data >> id;
 
 		if (id == "v") {
-			glm::vec3 v;
+			vec3 v;
 			data >> v.x >> v.y >> v.z;
 			objVertices.push_back(v);
 		}
 
 		if (id == "vn") {
-			glm::vec3 vn;
+			vec3 vn;
 			data >> vn.x >> vn.y >> vn.z;
 			objNormals.push_back(vn);
 		}
 
 		if (id == "vt") {
-			glm::vec2 vt;
+			vec2 vt;
 			data >> vt.x >> vt.y;
 			objUvs.push_back(vt);
 		}
 
 		if (id == "f") {
-			std::string faceInfo;
+			string faceInfo;
 
 			for (int i(0); i < 3; ++i) {
-				glm::uvec3 f;
+				uvec3 f;
 				data >> faceInfo;
 
-				std::size_t first = faceInfo.find("/");
-				std::size_t second = faceInfo.find("/", first + 1);
+				size_t first = faceInfo.find("/");
+				size_t second = faceInfo.find("/", first + 1);
 
 				// Vertex
-				f.x = std::stoi(faceInfo.substr(0, first)) - 1;
+				f.x = stoi(faceInfo.substr(0, first)) - 1;
 
 				// UV
 				f.y = second - first == 1 ? 
 					-1 : 
-					std::stoi(faceInfo.substr(first + 1, second - first)) - 1;
+					stoi(faceInfo.substr(first + 1, second - first)) - 1;
 
 				// Normal
 				f.z = faceInfo.size() - second == 1 ?
 					-1 :
-					std::stoi(faceInfo.substr(second + 1)) - 1;
+					stoi(faceInfo.substr(second + 1)) - 1;
 					
-
 				objFaces.push_back(f);
 			}
 		}
@@ -139,7 +138,7 @@ void Mesh::LoadFromFile(std::string & filePath)
 	file.close();
 
 	for (int i(0); i < objFaces.size(); ++i) {
-		glm::uvec3 face = objFaces[i];
+		uvec3 face = objFaces[i];
 		GLuint index = finalVertices.size();
 
 		// Check if vertice already exists
@@ -178,7 +177,7 @@ void Mesh::LoadFromFile(std::string & filePath)
 
 		// Save face
 		if (i % 3 == 0) {
-			finalFaces.push_back(glm::uvec3(index, 0, 0));
+			finalFaces.push_back(uvec3(index, 0, 0));
 		}
 		else if (i % 3 == 1) {
 			finalFaces[i / 3].y = index;
@@ -191,62 +190,62 @@ void Mesh::LoadFromFile(std::string & filePath)
 	setData(finalVertices, finalNormals, finalUvs, finalFaces);
 }
 
-void Mesh::setData(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<glm::vec2>& uvs, std::vector<glm::uvec3>& faces)
+void Mesh::setData(vector<vec3>& pVertices, vector<vec3>& pNormals, vector<vec2>& pUVs, vector<uvec3>& pFaces)
 {
-	m_data.storeVertices(vertices);
+	m_data.storeVertices(pVertices);
 
-	if (normals.size()) {
-		m_data.storeNormals(normals);
-		m_normals.storeVertices(computeNormalsVertices(vertices, normals, 7));
+	if (pNormals.size()) {
+		m_data.storeNormals(pNormals);
+		m_normals.storeVertices(computeNormalsVertices(pVertices, pNormals, 7));
 
-		if (uvs.size()) {
-			std::vector<glm::vec3> tangents = computeTangents(vertices, normals, uvs, faces);
+		if (pUVs.size()) {
+			vector<vec3> tangents = computeTangents(pVertices, pNormals, pUVs, pFaces);
 			m_data.storeTangents(tangents);
-			m_tangents.storeVertices(computeNormalsVertices(vertices, tangents, 7));
+			m_tangents.storeVertices(computeNormalsVertices(pVertices, tangents, 7));
 		}
 	}
 
-	if (uvs.size()) {
-		m_data.storeUvs(uvs);
+	if (pUVs.size()) {
+		m_data.storeUvs(pUVs);
 	}
 
-	m_data.storeFaces(faces);
+	m_data.storeFaces(pFaces);
 }
 
-std::vector<glm::vec3> Mesh::computeNormalsVertices(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, int factor)
+vector<vec3> Mesh::computeNormalsVertices(vector<vec3>& pVertices, vector<vec3>& pNormals, int pFactor)
 {
-	std::vector <glm::vec3> normalsVertices;
+	vector <vec3> normalsVertices;
 
-	for (int i(0); i < vertices.size(); ++i) {
-		normalsVertices.push_back(vertices[i]);
-		normalsVertices.push_back(vertices[i] + glm::normalize(normals[i]) / (float) factor);
+	for (int i(0); i < pVertices.size(); ++i) {
+		normalsVertices.push_back(pVertices[i]);
+		normalsVertices.push_back(pVertices[i] + glm::normalize(pNormals[i]) / (float) pFactor);
 	}
 
 	return normalsVertices;
 }
 
-std::vector<glm::vec3> Mesh::computeTangents(std::vector<glm::vec3>& vertices, std::vector<glm::vec3>& normals, std::vector<glm::vec2>& uvs, std::vector<glm::uvec3>& faces)
+vector<vec3> Mesh::computeTangents(vector<vec3>& pVertices, vector<vec3>& pNormals, vector<vec2>& pUVs, vector<uvec3>& pFaces)
 {
-	std::vector <glm::vec3> tangents(vertices.size());
+	vector <vec3> tangents(pVertices.size());
 
-	for (int i(0); i < faces.size(); ++i) {
-		glm::vec3 edge1(vertices[faces[i].y] - vertices[faces[i].x]);
-		glm::vec3 edge2(vertices[faces[i].z] - vertices[faces[i].x]);
+	for (int i(0); i < pFaces.size(); ++i) {
+		vec3 edge1(pVertices[pFaces[i].y] - pVertices[pFaces[i].x]);
+		vec3 edge2(pVertices[pFaces[i].z] - pVertices[pFaces[i].x]);
 
-		glm::vec2 delta1(uvs[faces[i].y] - uvs[faces[i].x]);
-		glm::vec2 delta2(uvs[faces[i].z] - uvs[faces[i].x]);
+		vec2 delta1(pUVs[pFaces[i].y] - pUVs[pFaces[i].x]);
+		vec2 delta2(pUVs[pFaces[i].z] - pUVs[pFaces[i].x]);
 
 		float f = 1.f / (delta1.x * delta2.y - delta2.x * delta1.y);
 
-		glm::vec3 tangent;
+		vec3 tangent;
 
 		tangent.x = f * ((edge1.x * delta2.y) + (edge2.x * -delta1.y));
 		tangent.y = f * ((edge1.y * delta2.y) + (edge2.y * -delta1.y));
 		tangent.z = f * ((edge1.z * delta2.y) + (edge2.z * -delta1.y));
 
-		tangents[faces[i].x] += tangent;
-		tangents[faces[i].y] += tangent;
-		tangents[faces[i].z] += tangent;
+		tangents[pFaces[i].x] += tangent;
+		tangents[pFaces[i].y] += tangent;
+		tangents[pFaces[i].z] += tangent;
 	}
 
 	return tangents;

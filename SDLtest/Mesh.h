@@ -8,10 +8,13 @@
 #include "VAO.h"
 #include "Texture.h"
 
+using namespace std;
+using namespace glm;
+
 class Mesh
 {
 public:
-	Mesh(std::string filePath, std::string textureName);
+	Mesh(string pFilePath, string pTextureName);
 	~Mesh();
 
 	void bind();
@@ -27,10 +30,10 @@ public:
 	void drawTangents();
 
 private:
-	void LoadFromFile(std::string& filePath);
-	void setData(std::vector <glm::vec3>& vertices, std::vector <glm::vec3>& normals, std::vector <glm::vec2>& uvs, std::vector <glm::uvec3>& faces);
-	std::vector <glm::vec3> computeNormalsVertices(std::vector <glm::vec3>& vertices, std::vector <glm::vec3>& normals, int factor = 1);
-	std::vector <glm::vec3> computeTangents(std::vector <glm::vec3>& vertices, std::vector <glm::vec3>& normals, std::vector<glm::vec2>& uvs, std::vector <glm::uvec3>& faces);
+	void LoadFromFile(string& filePath);
+	void setData(vector <vec3>& pVertices, vector <vec3>& pNormals, vector <vec2>& pUVs, vector <uvec3>& pFaces);
+	vector <vec3> computeNormalsVertices(vector <vec3>& pVertices, vector <vec3>& pNormals, int pFactor = 1);
+	vector <vec3> computeTangents(vector <vec3>& pVertices, vector <vec3>& pNormals, vector<vec2>& pUVs, vector <uvec3>& pFaces);
 
 private:
 	VAO m_data;

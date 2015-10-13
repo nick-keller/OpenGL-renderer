@@ -5,12 +5,12 @@
 class VBO
 {
 public:
-	VBO(GLenum target);
+	VBO(GLenum pTarget);
 	~VBO();
 
 	GLuint getId();
 
-	void setData(const GLvoid *data, GLsizeiptr size, GLenum usage = GL_STATIC_DRAW);
+	void setData(const GLvoid *pData, GLsizeiptr pSize, GLenum pUsage = GL_STATIC_DRAW);
 
 	void bind();
 	void unbind();

@@ -2,8 +2,8 @@
 
 
 
-ShaderProgram::ShaderProgram(std::string vertexFilePath, std::string fragmentFilePath) :
-	m_vertexShader(vertexFilePath, GL_VERTEX_SHADER), m_fragmentShader(fragmentFilePath, GL_FRAGMENT_SHADER), m_id(0)
+ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
+	m_vertexShader(pVertexFilePath, GL_VERTEX_SHADER), m_fragmentShader(pFragmentFilePath, GL_FRAGMENT_SHADER), m_id(0)
 {
 	if (!compile()) {
 		deleteProgram();
@@ -17,10 +17,10 @@ ShaderProgram::ShaderProgram(std::string vertexFilePath, std::string fragmentFil
 
 	// Bind texture units
 	use();
-	updateUniform("textureDiffuse", Texture::DIFFUSE);
+	updateUniform("textureDiffuse" , Texture::DIFFUSE);
 	updateUniform("textureSpecular", Texture::SPECULAR);
-	updateUniform("textureNormal", Texture::NORMAL);
-	updateUniform("textureBump", Texture::BUMP);
+	updateUniform("textureNormal"  , Texture::NORMAL);
+	updateUniform("textureBump"    , Texture::BUMP);
 	stop();
 }
 
@@ -48,23 +48,23 @@ bool ShaderProgram::compile()
 	attach(m_fragmentShader);
 
 	bindAttribLocation(VAO::VERTICES, "in_Vertex");
-	bindAttribLocation(VAO::COLORS, "in_Color");
-	bindAttribLocation(VAO::NORMALS, "in_Normal");
-	bindAttribLocation(VAO::UV, "in_TexCoord");
+	bindAttribLocation(VAO::COLORS  , "in_Color");
+	bindAttribLocation(VAO::NORMALS , "in_Normal");
+	bindAttribLocation(VAO::UV      , "in_TexCoord");
 	bindAttribLocation(VAO::TANGENTS, "in_Tangent");
 
 	if (!link())
 	{
-		std::cout << getLog() << std::endl;
+		cout << getLog() << endl;
 		return false;
 	}
 
 	return true;
 }
 
-void ShaderProgram::attach(Shader & shader)
+void ShaderProgram::attach(Shader & pShader)
 {
-	glAttachShader(m_id, shader.getId());
+	glAttachShader(m_id, pShader.getId());
 }
 
 bool ShaderProgram::link()
@@ -78,12 +78,12 @@ bool ShaderProgram::link()
 	return isLinked == GL_TRUE;
 }
 
-void ShaderProgram::bindAttribLocation(VAO::Prop attribute, char * name)
+void ShaderProgram::bindAttribLocation(VAO::Prop pAttribute, char * pName)
 {
-	glBindAttribLocation(m_id, attribute, name);
+	glBindAttribLocation(m_id, pAttribute, pName);
 }
 
-std::string ShaderProgram::getLog()
+string ShaderProgram::getLog()
 {
 	GLint maxLength = 0;
 	glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
@@ -92,7 +92,7 @@ std::string ShaderProgram::getLog()
 	glGetShaderInfoLog(m_id, maxLength, &maxLength, errorLog);
 	errorLog[maxLength] = '\0';
 
-	std::string log(errorLog);
+	string log(errorLog);
 	delete[] errorLog;
 
 	return log;
@@ -118,51 +118,51 @@ void ShaderProgram::deleteProgram()
 	glDeleteProgram(m_id);
 }
 
-void ShaderProgram::updateUniform(std::string name, Texture::Type type)
+void ShaderProgram::updateUniform(string pName, Texture::Type pType)
 {
-	glUniform1i(getUniformLocation(name), type);
+	glUniform1i(getUniformLocation(pName), pType);
 }
 
-void ShaderProgram::updateUniform(std::string name, glm::vec3 vector)
+void ShaderProgram::updateUniform(string pName, vec3 pVector)
 {
-	glUniform3f(getUniformLocation(name), vector.x, vector.y, vector.z);
+	glUniform3f(getUniformLocation(pName), pVector.x, pVector.y, pVector.z);
 }
 
-void ShaderProgram::updateUniform(std::string name, glm::mat4& matrix)
+void ShaderProgram::updateUniform(string pName, mat4& pMatrix)
 {
-	updateUniform(getUniformLocation(name), matrix);
+	updateUniform(getUniformLocation(pName), pMatrix);
 }
 
-void ShaderProgram::updateUniform(GLint location, glm::mat4& matrix)
+void ShaderProgram::updateUniform(GLint pLocation, mat4& pMatrix)
 {
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, value_ptr(pMatrix));
 }
 
-void ShaderProgram::updateProjectionMatrix(glm::mat4& matrix)
+void ShaderProgram::updateProjectionMatrix(mat4& pMatrix)
 {
-	updateUniform(m_projectionMatrix, matrix);
+	updateUniform(m_projectionMatrix, pMatrix);
 }
 
-void ShaderProgram::updateViewMatrix(glm::mat4& matrix)
+void ShaderProgram::updateViewMatrix(mat4& pMatrix)
 {
-	updateUniform(m_viewMatrix, matrix);
+	updateUniform(m_viewMatrix, pMatrix);
 }
 
-void ShaderProgram::updateModelMatrix(glm::mat4& matrix)
+void ShaderProgram::updateModelMatrix(mat4& pMatrix)
 {
-	updateUniform(m_modelMatrix, matrix);
+	updateUniform(m_modelMatrix, pMatrix);
 }
 
-GLint ShaderProgram::getUniformLocation(std::string name)
+GLint ShaderProgram::getUniformLocation(string pName)
 {
 	GLint location;
 
-	if (!m_uniforms.count(name)) {
-		location = glGetUniformLocation(m_id, name.c_str());
-		m_uniforms[name] = location;
+	if (!m_uniforms.count(pName)) {
+		location = glGetUniformLocation(m_id, pName.c_str());
+		m_uniforms[pName] = location;
 	}
 	else {
-		location = m_uniforms[name];
+		location = m_uniforms[pName];
 	}
 
 	return location;

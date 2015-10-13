@@ -2,8 +2,8 @@
 
 
 
-Camera::Camera(glm::vec3 position, glm::vec3 lookAt, glm::vec3 up) :
-	m_position(position), m_lookAt(lookAt), m_up(up)
+Camera::Camera(vec3 pPosition, vec3 pLookAt, vec3 pUp) :
+	m_position(pPosition), m_lookAt(pLookAt), m_up(pUp)
 {
 	updateViewMatrix();
 }
@@ -13,17 +13,17 @@ Camera::~Camera()
 {
 }
 
-glm::mat4 Camera::getViewMatrix() const
+mat4 Camera::getViewMatrix() const
 {
 	return m_viewMatrix;
 }
 
-void Camera::rotate(float angle, glm::vec3 axis)
+void Camera::rotate(float pAngle, vec3 pAxis)
 {
-	m_viewMatrix = glm::rotate(m_viewMatrix, angle, axis);
+	m_viewMatrix = glm::rotate(m_viewMatrix, pAngle, pAxis);
 }
 
 void Camera::updateViewMatrix()
 {
-	m_viewMatrix = glm::lookAt(m_position, m_position + m_lookAt, m_up);
+	m_viewMatrix = lookAt(m_position, m_position + m_lookAt, m_up);
 }

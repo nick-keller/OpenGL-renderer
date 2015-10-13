@@ -1,7 +1,7 @@
 #include "Shader.h"
 
-Shader::Shader(std::string filePath, GLenum type) :
-	m_filePath(filePath), m_type(type), m_id(0)
+Shader::Shader(string pFilePath, GLenum pType) :
+	m_filePath(pFilePath), m_type(pType), m_id(0)
 {
 	if (!compile()) {
 		deleteShader();
@@ -24,12 +24,12 @@ bool Shader::compile()
 	m_id = glCreateShader(m_type);
 
 	if (!loadFromFile()) {
-		std::cout << "File " << m_filePath << " not found." << std::endl;
+		cout << "File " << m_filePath << " not found." << endl;
 		return false;
 	}
 
 	if (!compileShader()) {
-		std::cout << getLog() << std::endl;
+		cout << getLog() << endl;
 		return false;
 	}
 
@@ -39,13 +39,13 @@ bool Shader::compile()
 bool Shader::loadFromFile()
 {
 	// Load file
-	std::ifstream file(m_filePath);
+	ifstream file(m_filePath);
 
 	if (!file) {
 		return false;
 	}
 
-	std::string source = std::string((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	string source = string((istreambuf_iterator<char>(file)), (istreambuf_iterator<char>()));
 	file.close();
 
 	// Upload source to GPU
@@ -81,7 +81,7 @@ bool Shader::compileShader()
 	return isCompiled == GL_TRUE;
 }
 
-std::string Shader::getLog()
+string Shader::getLog()
 {
 	GLint maxLength = 0;
 	glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &maxLength);
@@ -90,7 +90,7 @@ std::string Shader::getLog()
 	glGetShaderInfoLog(m_id, maxLength, &maxLength, errorLog);
 	errorLog[maxLength] = '\0';
 
-	std::string log(errorLog);
+	string log(errorLog);
 	delete[] errorLog;
 
 	return log;

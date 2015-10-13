@@ -9,30 +9,33 @@
 #include "ShaderProgram.h"
 #include "Entity.h"
 
-typedef std::map<std::string, ShaderProgram*> ShaderList;
-typedef std::map<std::string, Mesh*> MeshList;
+using namespace std;
+using namespace glm;
+
+typedef map<string, ShaderProgram*> ShaderList;
+typedef map<string, Mesh*> MeshList;
 
 class Scene
 {
 public:
-	Scene(double ratio, double angle = 70, double near = 1, double far = 100);
+	Scene(double pRatio, double pAngle = 70, double pNear = 1, double pFar = 100);
 	~Scene();
 
-	void render(const Camera& camera);
+	void render(const Camera& pCamera);
 
 private:
 	void updateProjectionMatrix();
 	void createAxis();
 	void loadShaders();
-	void loadShader(std::string name);
+	void loadShader(string pName);
 	void loadMeshs();
 
-	void drawMeshs(const Camera& camera);
+	void drawMeshs(const Camera& pCamera);
 	void drawAxis();
 	void drawNormals();
 
 private:
-	glm::mat4 m_projectionMatrix;
+	mat4 m_projectionMatrix;
 	double m_angle;
 	double m_ratio;
 	double m_near;
@@ -41,7 +44,7 @@ private:
 	VAO m_axis;
 	ShaderList m_shaders;
 	MeshList m_meshs;
-	std::map<ShaderProgram*, std::vector<Mesh*> > m_shaderMeshs;
-	std::map<Mesh*, std::vector<Entity*> > m_meshEntities;
+	map<ShaderProgram*, vector<Mesh*> > m_shaderMeshs;
+	map<Mesh*, vector<Entity*> > m_meshEntities;
 };
 

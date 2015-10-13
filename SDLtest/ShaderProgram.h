@@ -5,10 +5,13 @@
 #include "VAO.h"
 #include "Texture.h"
 
+using namespace std;
+using namespace glm;
+
 class ShaderProgram
 {
 public:
-	ShaderProgram(std::string vertexFilePath, std::string fragmentFilePath);
+	ShaderProgram(string pVertexFilePath, string pFragmentFilePath);
 	~ShaderProgram();
 
 	void use();
@@ -17,23 +20,23 @@ public:
 	bool isProgram();
 	void deleteProgram();
 
-	void updateUniform(std::string name, Texture::Type type);
-	void updateUniform(std::string name, glm::vec3 vector);
+	void updateUniform(string pName, Texture::Type pType);
+	void updateUniform(string pName, vec3 pVector);
 
-	void updateUniform(std::string name, glm::mat4& matrix);
-	void updateUniform(GLint location, glm::mat4& matrix);
-	void updateProjectionMatrix(glm::mat4& matrix);
-	void updateViewMatrix(glm::mat4& matrix);
-	void updateModelMatrix(glm::mat4& matrix);
+	void updateUniform(string pName, mat4& pMatrix);
+	void updateUniform(GLint pLocation, mat4& pMatrix);
+	void updateProjectionMatrix(mat4& pMatrix);
+	void updateViewMatrix(mat4& pMatrix);
+	void updateModelMatrix(mat4& pMatrix);
 
 private:
 	bool compile();
 	void attach(Shader& shader);
 	bool link();
-	void bindAttribLocation(VAO::Prop attribute, char* name);
-	std::string getLog();
+	void bindAttribLocation(VAO::Prop pAttribute, char* pName);
+	string getLog();
 
-	GLint getUniformLocation(std::string name);
+	GLint getUniformLocation(string pName);
 
 private:
 	GLuint m_id;
@@ -42,6 +45,6 @@ private:
 	GLint m_projectionMatrix;
 	GLint m_viewMatrix;
 	GLint m_modelMatrix;
-	std::map<std::string, GLint> m_uniforms;
+	map<string, GLint> m_uniforms;
 };
 

@@ -12,7 +12,7 @@ VAO::VAO() :
 VAO::~VAO()
 {
 	// Free all VBOs
-	for (std::map<Prop, VBO*>::iterator it = m_vbos.begin(); it != m_vbos.end(); ++it) {
+	for (map<Prop, VBO*>::iterator it = m_vbos.begin(); it != m_vbos.end(); ++it) {
 		delete m_vbos[it->first];
 	}
 
@@ -29,25 +29,25 @@ GLuint VAO::getFacesCount()
 	return m_facesCount;
 }
 
-void VAO::store(Prop attribute, const GLvoid * data, int verticesLength, GLint perVertex, GLenum type, GLenum usage, GLenum target)
+void VAO::store(Prop pAttribute, const GLvoid * pData, int pVerticesLength, GLint pPerVertex, GLenum pType, GLenum pUsage, GLenum pTarget)
 {
 	bind();
 
 	// Delete any previous VBO
-	if (m_vbos.count(attribute)) {
-		delete m_vbos[attribute];
+	if (m_vbos.count(pAttribute)) {
+		delete m_vbos[pAttribute];
 	}
 
 	// Create VBO and store data
-	m_vbos[attribute] = new VBO(target);
-	m_vbos[attribute]->setData(data, verticesLength * perVertex * sizeOf(type), usage);
+	m_vbos[pAttribute] = new VBO(pTarget);
+	m_vbos[pAttribute]->setData(pData, pVerticesLength * pPerVertex * sizeOf(pType), pUsage);
 
 	// Define attributes
-	if (target == GL_ARRAY_BUFFER) {
-		defineAttribute(attribute, perVertex, type);
-		enableAttribute(attribute);
+	if (pTarget == GL_ARRAY_BUFFER) {
+		defineAttribute(pAttribute, pPerVertex, pType);
+		enableAttribute(pAttribute);
 
-		m_vbos[attribute]->unbind();
+		m_vbos[pAttribute]->unbind();
 
 		if (m_vbos.count(FACES)) {
 			m_vbos[FACES]->bind();
@@ -57,36 +57,36 @@ void VAO::store(Prop attribute, const GLvoid * data, int verticesLength, GLint p
 	unbind();
 }
 
-void VAO::storeVertices(std::vector<glm::vec3> vertices, GLenum usage)
+void VAO::storeVertices(vector<vec3> pVertices, GLenum pUsage)
 {
-	m_verticesCount = vertices.size();
-	store(VERTICES, &vertices[0].x, vertices.size(), 3, GL_FLOAT, usage);
+	m_verticesCount = pVertices.size();
+	store(VERTICES, &pVertices[0].x, pVertices.size(), 3, GL_FLOAT, pUsage);
 }
 
-void VAO::storeColors(std::vector<glm::vec3> colors, GLenum usage)
+void VAO::storeColors(vector<vec3> pColors, GLenum pUsage)
 {
-	store(COLORS, &colors[0].x, colors.size(), 3, GL_FLOAT, usage);
+	store(COLORS, &pColors[0].x, pColors.size(), 3, GL_FLOAT, pUsage);
 }
 
-void VAO::storeNormals(std::vector<glm::vec3> normals, GLenum usage)
+void VAO::storeNormals(vector<vec3> pNormals, GLenum pUsage)
 {
-	store(NORMALS, &normals[0].x, normals.size(), 3, GL_FLOAT, usage);
+	store(NORMALS, &pNormals[0].x, pNormals.size(), 3, GL_FLOAT, pUsage);
 }
 
-void VAO::storeTangents(std::vector<glm::vec3> tangents, GLenum usage)
+void VAO::storeTangents(vector<vec3> pTangents, GLenum pUsage)
 {
-	store(TANGENTS, &tangents[0].x, tangents.size(), 3, GL_FLOAT, usage);
+	store(TANGENTS, &pTangents[0].x, pTangents.size(), 3, GL_FLOAT, pUsage);
 }
 
-void VAO::storeUvs(std::vector<glm::vec2> uvs, GLenum usage)
+void VAO::storeUvs(vector<vec2> pUVs, GLenum pUsage)
 {
-	store(UV, &uvs[0].x, uvs.size(), 2, GL_FLOAT, usage);
+	store(UV, &pUVs[0].x, pUVs.size(), 2, GL_FLOAT, pUsage);
 }
 
-void VAO::storeFaces(std::vector<glm::uvec3> faces, GLenum usage)
+void VAO::storeFaces(vector<uvec3> pFaces, GLenum pUsage)
 {
-	m_facesCount = faces.size();
-	store(FACES, &faces[0].x, faces.size(), 3, GL_UNSIGNED_INT, usage, GL_ELEMENT_ARRAY_BUFFER);
+	m_facesCount = pFaces.size();
+	store(FACES, &pFaces[0].x, pFaces.size(), 3, GL_UNSIGNED_INT, pUsage, GL_ELEMENT_ARRAY_BUFFER);
 }
 
 void VAO::bind()
@@ -111,27 +111,27 @@ void VAO::drawLines()
 	unbind();
 }
 
-void VAO::defineAttribute(Prop attribute, GLint perVertex, GLenum type)
+void VAO::defineAttribute(Prop pAttribute, GLint pPerVertex, GLenum pType)
 {
-	glVertexAttribPointer(attribute, perVertex, type, GL_FALSE, 0, 0);
+	glVertexAttribPointer(pAttribute, pPerVertex, pType, GL_FALSE, 0, 0);
 }
 
-void VAO::enableAttribute(Prop attribute)
+void VAO::enableAttribute(Prop pAttribute)
 {
-	glEnableVertexAttribArray(attribute);
+	glEnableVertexAttribArray(pAttribute);
 }
 
-void VAO::disableAttribute(Prop attribute)
+void VAO::disableAttribute(Prop pAttribute)
 {
-	glDisableVertexAttribArray(attribute);
+	glDisableVertexAttribArray(pAttribute);
 }
 
-std::size_t VAO::sizeOf(GLenum type)
+size_t VAO::sizeOf(GLenum pType)
 {
-	if (type == GL_FLOAT) {
+	if (pType == GL_FLOAT) {
 		return sizeof(GLfloat);
 	}
-	if (type == GL_UNSIGNED_INT) {
+	if (pType == GL_UNSIGNED_INT) {
 		return sizeof(GLuint);
 	}
 }

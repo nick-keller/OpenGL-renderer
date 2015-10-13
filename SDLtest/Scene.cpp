@@ -2,8 +2,8 @@
 
 
 
-Scene::Scene(double ratio, double angle, double near, double far) :
-	m_ratio(ratio), m_angle(angle), m_near(near), m_far(far)
+Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
+	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar)
 {
 	loadShaders();
 	loadMeshs();
@@ -26,16 +26,16 @@ Scene::~Scene()
 	}
 }
 
-void Scene::render(const Camera& camera)
+void Scene::render(const Camera& pCamera)
 {
-	drawMeshs(camera);
+	drawMeshs(pCamera);
 	drawAxis();
 	//drawNormals();
 }
 
 void Scene::updateProjectionMatrix()
 {
-	m_projectionMatrix = glm::perspective(m_angle, m_ratio, m_near, m_far);
+	m_projectionMatrix = perspective(m_angle, m_ratio, m_near, m_far);
 
 	for (ShaderList::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it) {
 		ShaderProgram* shader = it->second;
@@ -48,20 +48,20 @@ void Scene::updateProjectionMatrix()
 
 void Scene::createAxis()
 {
-	float vertices[] = {
+	float pVertices[] = {
 		0,0,0, 1,0,0,
 		0,0,0, 0,1,0,
 		0,0,0, 0,0,1
 	};
 
-	float colors[] = {
+	float pColors[] = {
 		1,0,0, 1,0,0,
 		0,1,0, 0,1,0,
 		0,0,1, 0,0,1
 	};
 
-	m_axis.storeVertices(std::vector<glm::vec3>((glm::vec3*) vertices, (glm::vec3*) vertices + 6));
-	m_axis.storeColors(std::vector<glm::vec3>((glm::vec3*) colors, (glm::vec3*) colors + 6));
+	m_axis.storeVertices(vector<vec3>((vec3*) pVertices, (vec3*) pVertices + 6));
+	m_axis.storeColors(vector<vec3>((vec3*) pColors, (vec3*) pColors + 6));
 }
 
 void Scene::loadShaders()
@@ -72,9 +72,9 @@ void Scene::loadShaders()
 	loadShader("forceColor");
 }
 
-void Scene::loadShader(std::string name)
+void Scene::loadShader(std::string pName)
 {
-	m_shaders[name] = new ShaderProgram(name + ".vert", name + ".frag");
+	m_shaders[pName] = new ShaderProgram(pName + ".vert", pName + ".frag");
 }
 
 void Scene::loadMeshs()
@@ -83,14 +83,15 @@ void Scene::loadMeshs()
 	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["mesh1"]);
 }
 
-void Scene::drawMeshs(const Camera& camera)
+
+void Scene::drawMeshs(const Camera& pCamera)
 {
 	for (ShaderList::iterator it = m_shaders.begin(); it != m_shaders.end(); ++it) {
 		ShaderProgram* shader = it->second;
 
 		// Use shader and update view matrix
 		shader->use();
-		shader->updateViewMatrix(camera.getViewMatrix());
+		shader->updateViewMatrix(pCamera.getViewMatrix());
 
 		for (int i(0); i < m_shaderMeshs[shader].size(); ++i) {
 			Mesh* mesh = m_shaderMeshs[shader][i];

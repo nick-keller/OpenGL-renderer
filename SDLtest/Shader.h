@@ -5,10 +5,12 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
+
 class Shader
 {
 public:
-	Shader(std::string filePath, GLenum type);
+	Shader(string pFilePath, GLenum pType);
 	~Shader();
 
 	GLuint getId();
@@ -19,10 +21,10 @@ private:
 	bool compile();
 	bool loadFromFile();
 	bool compileShader();
-	std::string getLog();
+	string getLog();
 
 private:
-	std::string m_filePath;
+	string m_filePath;
 	GLenum m_type;
 	GLuint m_id;
 };

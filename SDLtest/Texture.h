@@ -6,12 +6,14 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 class Texture
 {
 public:
 	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP};
 
-	Texture(std::string filePath, Type type);
+	Texture(string pFilePath, Type pType);
 	~Texture();
 
 	GLuint getId();
@@ -19,11 +21,11 @@ public:
 	void bind();
 	void unbind();
 
-	void setParameter(GLenum pname, GLint param);
+	void setParameter(GLenum pName, GLint pParam);
 
 private:
-	bool loadFromFile(std::string filePath, SDL_Surface **surface);
-	void store(SDL_Surface *surface);
+	bool loadFromFile(string pFilePath, SDL_Surface **pSurface);
+	void store(SDL_Surface *pSurface);
 
 private:
 	GLuint m_id;
