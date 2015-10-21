@@ -20,7 +20,7 @@ void main() {
 
 	gl_Position = projection * view * worldPosition;
 	normal = (model * vec4(in_Normal, 1.0)).xyz;
-	toLight = (inverse(view) * vec4(-1, 10, 2, 1.0)).xyz;
+	toLight = (vec4(10, 10, 10, 1.0)).xyz;
 	toCamera = (inverse(view) * vec4(0, 0, 0, 1)).xyz - worldPosition.xyz;
 	texCoord = in_TexCoord;
 	tangent = (model * vec4(in_Tangent, 1.0)).xyz;

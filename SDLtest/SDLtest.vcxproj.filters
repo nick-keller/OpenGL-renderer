@@ -54,6 +54,12 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMap.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -83,6 +89,12 @@
     <ClInclude Include="Texture.h">
       <Filter>Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMap.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simpleColor.frag">
@@ -107,6 +119,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="forceColor.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="skybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="skybox.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -9,7 +9,7 @@ using namespace glm;
 class Entity
 {
 public:
-	Entity(Mesh* pMesh);
+	Entity(Mesh* pMesh, mat4 pModelMatrix);
 	~Entity();
 
 	mat4 getModelMatrix() const;

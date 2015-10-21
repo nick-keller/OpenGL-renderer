@@ -11,7 +11,7 @@ using namespace std;
 class Texture
 {
 public:
-	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP};
+	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP, CUBE};
 
 	Texture(string pFilePath, Type pType);
 	~Texture();

@@ -3,12 +3,10 @@
 
 
 Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
-	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar)
+	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar), m_skyboxMap("sky"), m_skybox("cube.obj")
 {
 	loadShaders();
 	loadMeshs();
-
-	m_meshEntities[m_meshs["mesh1"]].push_back(new Entity(m_meshs["mesh1"]));
 
 	updateProjectionMatrix();
 	createAxis();
@@ -28,6 +26,7 @@ Scene::~Scene()
 
 void Scene::render(const Camera& pCamera)
 {
+	drawSky(pCamera);
 	drawMeshs(pCamera);
 	drawAxis();
 	//drawNormals();
@@ -70,6 +69,7 @@ void Scene::loadShaders()
 	loadShader("simpleShadow");
 	loadShader("simpleTextured");
 	loadShader("forceColor");
+	loadShader("skybox");
 }
 
 void Scene::loadShader(std::string pName)
@@ -79,10 +79,32 @@ void Scene::loadShader(std::string pName)
 
 void Scene::loadMeshs()
 {
-	m_meshs["mesh1"] = new Mesh("cube.obj", "bricks");
-	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["mesh1"]);
+	m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
+	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
+
+	m_meshs["cube"] = new Mesh("cube.obj", "bricks");
+	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["cube"]);
+
+	//m_meshs["dragon"] = new Mesh("dragon.obj");
+	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
 }
 
+
+void Scene::drawSky(const Camera& pCamera)
+{
+	glDepthMask(GL_FALSE);
+
+	m_shaders["skybox"]->use();
+	m_shaders["skybox"]->updateViewMatrix(glm::mat4(glm::mat3(pCamera.getViewMatrix())));
+	m_skybox.bind();
+	m_skyboxMap.bind();
+	m_shaders["skybox"]->updateUniform("skybox", Texture::CUBE);
+	m_skybox.draw();
+	m_skybox.unbind();
+	m_shaders["skybox"]->stop();
+
+	glDepthMask(GL_TRUE);
+}
 
 void Scene::drawMeshs(const Camera& pCamera)
 {
@@ -152,4 +174,9 @@ void Scene::drawNormals()
 	}
 
 	m_shaders["forceColor"]->stop();
+}
+
+void Scene::addEntity(string pName, mat4 pModelMatrix)
+{
+	m_meshEntities[m_meshs[pName]].push_back(new Entity(m_meshs[pName], pModelMatrix));
 }

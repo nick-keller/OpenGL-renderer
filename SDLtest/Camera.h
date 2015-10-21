@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 using namespace glm;
 
@@ -13,7 +14,9 @@ public:
 
 	glm::mat4 getViewMatrix() const;
 
-	void rotate(float pAngle, vec3 pAxis);
+	void rotate(float h, float v);
+	void moveForward(float length);
+	void moveLeft(float length);
 
 private:
 	void updateViewMatrix();

@@ -138,6 +138,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CubeMap.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -150,6 +152,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CubeMap.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Scene.h" />
@@ -168,6 +172,8 @@
     <None Include="simpleColor.vert" />
     <None Include="simpleTextured.frag" />
     <None Include="simpleTextured.vert" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

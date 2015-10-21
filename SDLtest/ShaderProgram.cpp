@@ -21,6 +21,7 @@ ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
 	updateUniform("textureSpecular", Texture::SPECULAR);
 	updateUniform("textureNormal"  , Texture::NORMAL);
 	updateUniform("textureBump"    , Texture::BUMP);
+	updateUniform("skybox"		   , Texture::CUBE);
 	stop();
 }
 

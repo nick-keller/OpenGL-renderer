@@ -14,7 +14,7 @@ using namespace glm;
 class Mesh
 {
 public:
-	Mesh(string pFilePath, string pTextureName);
+	Mesh(string pFilePath, string pTextureName = "");
 	~Mesh();
 
 	void bind();

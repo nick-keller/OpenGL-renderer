@@ -8,6 +8,7 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "Entity.h"
+#include "CubeMap.h"
 
 using namespace std;
 using namespace glm;
@@ -18,10 +19,11 @@ typedef map<string, Mesh*> MeshList;
 class Scene
 {
 public:
-	Scene(double pRatio, double pAngle = 70, double pNear = 1, double pFar = 100);
+	Scene(double pRatio, double pAngle = 70, double pNear = 0.1, double pFar = 100);
 	~Scene();
 
 	void render(const Camera& pCamera);
+	void addEntity(string pName, mat4 pModelMatrix = mat4());
 
 private:
 	void updateProjectionMatrix();
@@ -30,6 +32,7 @@ private:
 	void loadShader(string pName);
 	void loadMeshs();
 
+	void drawSky(const Camera& pCamera);
 	void drawMeshs(const Camera& pCamera);
 	void drawAxis();
 	void drawNormals();
@@ -46,5 +49,8 @@ private:
 	MeshList m_meshs;
 	map<ShaderProgram*, vector<Mesh*> > m_shaderMeshs;
 	map<Mesh*, vector<Entity*> > m_meshEntities;
+
+	CubeMap m_skyboxMap;
+	Mesh m_skybox;
 };
 

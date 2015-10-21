@@ -23,7 +23,6 @@ void main() {
 
 	// Bump
 	vec3 bumpOffset = normalize(inverse(TBN) * toCamera) * (texture(textureBump, texCoord).x / 32);
-	//bumpOffset = vec3(0, 0, 0);
 
 	// Normal
 	vec3 bumpNormal = texture(textureNormal, texCoord + bumpOffset.xy).xyz;
@@ -32,11 +31,11 @@ void main() {
 
 	// Material
 	float shineDamper = 30;
-	float reflectivity = .3;
+	float reflectivity = .4;
 	
 	// Diffuse 
 	vec3 ambiantColor = vec3(1, 1, 1);
-	float ambiantBrightness = .2;
+	float ambiantBrightness = 0;
 
 	vec3 lightColor = vec3(1, 1, 1);
 	float lightBrightness = max(dot(NewNormal, unitToLight), 0.0);
