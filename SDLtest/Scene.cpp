@@ -79,8 +79,8 @@ void Scene::loadShader(std::string pName)
 
 void Scene::loadMeshs()
 {
-	m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
-	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
+	//m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
+	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
 
 	m_meshs["cube"] = new Mesh("cube.obj", "bricks");
 	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["cube"]);
@@ -93,16 +93,17 @@ void Scene::loadMeshs()
 void Scene::drawSky(const Camera& pCamera)
 {
 	glDepthMask(GL_FALSE);
+	glDisable(GL_CULL_FACE);
 
 	m_shaders["skybox"]->use();
 	m_shaders["skybox"]->updateViewMatrix(glm::mat4(glm::mat3(pCamera.getViewMatrix())));
 	m_skybox.bind();
 	m_skyboxMap.bind();
-	m_shaders["skybox"]->updateUniform("skybox", Texture::CUBE);
 	m_skybox.draw();
 	m_skybox.unbind();
 	m_shaders["skybox"]->stop();
 
+	glEnable(GL_CULL_FACE);
 	glDepthMask(GL_TRUE);
 }
 

@@ -24,12 +24,14 @@ int WinMain()
 	SDL_DisplayMode desktop;
 	SDL_GetDesktopDisplayMode(0, &desktop);
 
-	window = SDL_CreateWindow("Test SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, desktop.w /2, desktop.h /2, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Test SDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, desktop.w /1.5, desktop.h /1.5, SDL_WINDOW_OPENGL);
 
 	glContext = SDL_GL_CreateContext(window);
 	glewInit();
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	Engine engine = Engine((float) desktop.w / (float) desktop.h);
 	engine.init();
