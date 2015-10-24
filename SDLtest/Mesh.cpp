@@ -3,11 +3,16 @@
 
 
 Mesh::Mesh(string pFilePath, string pTextureName) :
-	m_diffuse(pTextureName  + "_diffuse.jpg" , Texture::DIFFUSE),
+	m_diffuse(pTextureName + "_diffuse.jpg", Texture::DIFFUSE),
 	m_specular(pTextureName + "_specular.jpg", Texture::SPECULAR),
-	m_normal(pTextureName   + "_normal.jpg"  , Texture::NORMAL),
-	m_bump(pTextureName     + "_bump.jpg"    , Texture::BUMP)
+	m_normal(pTextureName + "_normal.jpg", Texture::NORMAL),
+	m_bump(pTextureName + "_bump.jpg", Texture::BUMP)
 {
+	m_boundingBox = {
+		vec3(FLT_MAX, FLT_MAX, FLT_MAX),
+		vec3(FLT_MIN, FLT_MIN, FLT_MIN)
+	};
+
 	LoadFromFile(pFilePath);
 }
 
@@ -65,6 +70,19 @@ void Mesh::drawTangents()
 	m_tangents.drawLines();
 }
 
+AABB Mesh::getBoundingBox()
+{
+	return {
+		m_boundingBox.position,
+		m_boundingBox.size - m_boundingBox.position
+	};
+}
+
+AABB Mesh::getRawBoundingBox()
+{
+	return m_boundingBox;
+}
+
 void Mesh::LoadFromFile(string & pFilePath)
 {
 	ifstream file(pFilePath.c_str());
@@ -93,6 +111,7 @@ void Mesh::LoadFromFile(string & pFilePath)
 			vec3 v;
 			data >> v.x >> v.y >> v.z;
 			objVertices.push_back(v);
+			updateBoundingBox(v);
 		}
 
 		if (id == "vn") {
@@ -249,4 +268,15 @@ vector<vec3> Mesh::computeTangents(vector<vec3>& pVertices, vector<vec3>& pNorma
 	}
 
 	return tangents;
+}
+
+void Mesh::updateBoundingBox(vec3 v)
+{
+	m_boundingBox.position.x = min(m_boundingBox.position.x, v.x);
+	m_boundingBox.position.y = min(m_boundingBox.position.y, v.y);
+	m_boundingBox.position.z = min(m_boundingBox.position.z, v.z);
+
+	m_boundingBox.size.x = max(m_boundingBox.size.x, v.x);
+	m_boundingBox.size.y = max(m_boundingBox.size.y, v.y);
+	m_boundingBox.size.z = max(m_boundingBox.size.z, v.z);
 }

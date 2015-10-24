@@ -24,6 +24,7 @@ public:
 
 	void render(const Camera& pCamera);
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
+	vector<Entity*>* getEntities();
 
 private:
 	void updateProjectionMatrix();
@@ -47,6 +48,7 @@ private:
 	VAO m_axis;
 	ShaderList m_shaders;
 	MeshList m_meshs;
+	vector<Entity*> m_entities;
 	map<ShaderProgram*, vector<Mesh*> > m_shaderMeshs;
 	map<Mesh*, vector<Entity*> > m_meshEntities;
 

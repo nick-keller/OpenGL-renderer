@@ -13,6 +13,7 @@ public:
 	~Entity();
 
 	mat4 getModelMatrix() const;
+	AABB getBoundingBox();
 
 private:
 	Mesh* m_mesh;

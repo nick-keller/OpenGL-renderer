@@ -3,7 +3,7 @@
 
 
 Camera::Camera(vec3 pPosition, vec3 pLookAt, vec3 pUp) :
-	m_position(pPosition), m_lookAt(normalize(pLookAt)), m_up(normalize(pUp))
+	m_position(pPosition), m_lookAt(normalize(pLookAt)), m_up(normalize(pUp)), m_height(PLAYER_HEIGHT + PLAYER_EYES), m_crouched(false)
 {
 	updateViewMatrix();
 }
@@ -48,7 +48,37 @@ void Camera::moveLeft(float length)
 	updateViewMatrix();
 }
 
+void Camera::move(vec3 delta)
+{
+	m_position += delta;
+	updateViewMatrix();
+}
+
+void Camera::update(float delta)
+{
+	if (m_crouched && m_height > PLAYER_CROUCH + PLAYER_EYES) {
+		m_height = max(PLAYER_CROUCH + PLAYER_EYES, m_height - delta / 200.f);
+	}
+
+	if (!m_crouched && m_height < PLAYER_HEIGHT + PLAYER_EYES) {
+		m_height = min(PLAYER_HEIGHT + PLAYER_EYES, m_height + delta / 200.f);
+	}
+}
+
+void Camera::setCrouched(bool crouched)
+{
+	m_crouched = crouched;
+}
+
+AABB Camera::getBoundingBox()
+{
+	return{
+		m_position - vec3(PLAYER_HALF_WIDTH, PLAYER_HALF_WIDTH, 0),
+		m_position + vec3(PLAYER_HALF_WIDTH, PLAYER_HALF_WIDTH, m_height - PLAYER_EYES)
+	};
+}
+
 void Camera::updateViewMatrix()
 {
-	m_viewMatrix = lookAt(m_position, m_position + m_lookAt, m_up);
+	m_viewMatrix = lookAt(m_position + vec3(0, 0, m_height), m_position + vec3(0, 0, m_height)  + m_lookAt, m_up);
 }

@@ -3,6 +3,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include "Mesh.h"
+
+#define PLAYER_HEIGHT 2.f
+#define PLAYER_WIDTH 1.f
+#define PLAYER_HALF_WIDTH PLAYER_WIDTH / 2.f
+#define PLAYER_EYES -.3f
+#define PLAYER_CROUCH 1.2f
 
 using namespace glm;
 
@@ -17,6 +24,11 @@ public:
 	void rotate(float h, float v);
 	void moveForward(float length);
 	void moveLeft(float length);
+	void move(vec3 delta);
+	void update(float delta);
+	void setCrouched(bool crouched);
+
+	AABB getBoundingBox();
 
 private:
 	void updateViewMatrix();
@@ -26,5 +38,7 @@ private:
 	vec3 m_position;
 	vec3 m_lookAt;
 	vec3 m_up;
+	float m_height;
+	bool m_crouched;
 };
 

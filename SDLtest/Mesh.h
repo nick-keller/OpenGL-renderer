@@ -7,9 +7,15 @@
 #include <vector>
 #include "VAO.h"
 #include "Texture.h"
+#include <float.h>
 
 using namespace std;
 using namespace glm;
+
+struct AABB {
+	vec3 position;
+	vec3 size;
+} typedef AABB;
 
 class Mesh
 {
@@ -29,11 +35,15 @@ public:
 	void unbindTangents();
 	void drawTangents();
 
+	AABB getBoundingBox();
+	AABB getRawBoundingBox();
+
 private:
 	void LoadFromFile(string& filePath);
 	void setData(vector <vec3>& pVertices, vector <vec3>& pNormals, vector <vec2>& pUVs, vector <uvec3>& pFaces);
 	vector <vec3> computeNormalsVertices(vector <vec3>& pVertices, vector <vec3>& pNormals, int pFactor = 1);
 	vector <vec3> computeTangents(vector <vec3>& pVertices, vector <vec3>& pNormals, vector<vec2>& pUVs, vector <uvec3>& pFaces);
+	void updateBoundingBox(vec3 v);
 
 private:
 	VAO m_data;
@@ -43,5 +53,6 @@ private:
 	Texture m_specular;
 	Texture m_normal;
 	Texture m_bump;
+	AABB m_boundingBox;
 };
 

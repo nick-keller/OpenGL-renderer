@@ -179,5 +179,13 @@ void Scene::drawNormals()
 
 void Scene::addEntity(string pName, mat4 pModelMatrix)
 {
-	m_meshEntities[m_meshs[pName]].push_back(new Entity(m_meshs[pName], pModelMatrix));
+	Entity* entity = new Entity(m_meshs[pName], pModelMatrix);
+
+	m_meshEntities[m_meshs[pName]].push_back(entity);
+	m_entities.push_back(entity);
+}
+
+vector<Entity*>* Scene::getEntities()
+{
+	return &m_entities;
 }

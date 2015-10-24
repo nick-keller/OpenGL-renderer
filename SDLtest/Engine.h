@@ -2,6 +2,9 @@
 
 #include <SDL2/SDL.h>
 #include "Scene.h"
+#include "EngineUtils.h"
+
+using namespace EngineUtils;
 
 class Engine
 {

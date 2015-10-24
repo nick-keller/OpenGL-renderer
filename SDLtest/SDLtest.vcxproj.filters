@@ -58,6 +58,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CubeMap.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineUtils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -93,6 +96,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="CubeMap.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineUtils.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
