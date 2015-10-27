@@ -82,7 +82,7 @@ void Scene::loadMeshs()
 	//m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
 	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
 
-	m_meshs["cube"] = new Mesh("cube.obj", "bricks");
+	m_meshs["cube"] = new Mesh("cube.obj", "rock");
 	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["cube"]);
 
 	//m_meshs["dragon"] = new Mesh("dragon.obj");

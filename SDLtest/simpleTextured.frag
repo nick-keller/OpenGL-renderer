@@ -113,8 +113,8 @@ vec3 computeLighting(PointLight light, vec3 normal, vec3 toEye) {
 	vec3 diffuse = diff * light.color;
 
 	// Specular
-	vec3 reflectDir = reflect(-lightDir, normal);  
-	float spec = pow(max(dot(toEye, reflectDir), 0), 32);
+	vec3 halfwayDir = normalize(lightDir + toEye);
+	float spec = pow(max(dot(normal, halfwayDir), 0), 32);
 	vec3 specular = 1 * spec * light.color;
 
 	// Attenuation
@@ -135,8 +135,8 @@ vec3 computeLighting(SpotLight light, vec3 normal, vec3 toEye) {
 	vec3 diffuse = diff * light.color * intensity;
 
 	// Specular
-	vec3 reflectDir = reflect(-lightDir, normal);  
-	float spec = pow(max(dot(toEye, reflectDir), 0), 32);
+	vec3 halfwayDir = normalize(lightDir + toEye);
+	float spec = pow(max(dot(normal, halfwayDir), 0), 32);
 	vec3 specular = 1 * spec * light.color;
 
 	// Attenuation
