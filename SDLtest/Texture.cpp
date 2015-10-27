@@ -18,6 +18,17 @@ Texture::Texture(string pFilePath, Type pType) :
 	}
 }
 
+Texture::Texture(int width, int height) :
+	m_type(DIFFUSE)
+{
+	glGenTextures(1, &m_id);
+	bind();
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
 
 Texture::~Texture()
 {

@@ -14,6 +14,7 @@ public:
 	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP, CUBE};
 
 	Texture(string pFilePath, Type pType);
+	Texture(int width, int height);
 	~Texture();
 
 	GLuint getId();

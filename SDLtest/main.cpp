@@ -33,7 +33,7 @@ int WinMain()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	Engine engine = Engine((float) desktop.w / (float) desktop.h);
+	Engine engine = Engine(desktop.w /1.5, desktop.h /1.5);
 	engine.init();
 
 	do

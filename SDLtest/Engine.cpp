@@ -2,12 +2,41 @@
 
 
 
-Engine::Engine(float ratio) :
-	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), m_scene(ratio), m_deltaX(0), m_deltaY(0)
+Engine::Engine(int width, int height) :
+	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
+	m_scene((float) width / (float) height), 
+	m_deltaX(0), m_deltaY(0), 
+	m_postFx(width, height, true, GL_RENDERBUFFER),
+	m_shaderFx("basic.vert", "basic.frag")
 {
+	m_screen = {width, height};
+
 	for (int i(0); i < 5; ++i) {
 		m_keys[i] = false;
 	}
+
+	vec3 vertices[] = {
+		vec3(-1, -1, 0),
+		vec3(-1, 1, 0),
+		vec3(1, -1, 0),
+		vec3(1, 1, 0)
+	};
+
+	vec2 uvs[] = {
+		vec2(0, 0),
+		vec2(0, 1),
+		vec2(1, 0),
+		vec2(1, 1)
+	};
+
+	uvec3 faces[] = {
+		uvec3(3, 1, 0),
+		uvec3(3, 0, 2)
+	};
+
+	m_quadFx.storeVertices(vector<vec3>(vertices, vertices + 4));
+	m_quadFx.storeUvs(vector<vec2>(uvs, uvs + 4));
+	m_quadFx.storeFaces(vector<uvec3>(faces, faces + 2));
 }
 
 
@@ -63,8 +92,8 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 		dir = normalize(dir);
 	}
 
-	m_camera.moveForward(delta / 1000.f * 2.5 * dir.x);
-	m_camera.moveLeft(delta / 1000.f * 2.5 * dir.y);
+	m_camera.moveForward(delta / 1000.f * 2.5f * dir.x);
+	m_camera.moveLeft(delta / 1000.f * 2.5f * dir.y);
 	m_camera.rotate(-m_deltaX / 10.f, m_deltaY / 10.f);
 	m_camera.update(delta);
 
@@ -79,5 +108,20 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 
 void Engine::render()
 {
+	m_postFx.bind();
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 	m_scene.render(m_camera);
+
+	m_postFx.unbind();
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	m_shaderFx.use();
+	m_quadFx.bind();
+	glDisable(GL_DEPTH_TEST);
+	m_postFx.getColorBuffer()->bind();
+	m_quadFx.drawTriangles();
+	m_quadFx.unbind();
 }
