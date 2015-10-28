@@ -28,6 +28,9 @@ public:
 	void render();
 
 private:
+	void generateScreenQuad();
+
+private:
 	Camera m_camera;
 	Scene m_scene;
 	bool m_keys[5];
@@ -35,8 +38,10 @@ private:
 	int m_deltaX, m_deltaY;
 	Size m_screen;
 
+	FBO m_gBuffer;
+	VAO m_screenQuad;
 	FBO m_postFx;
-	VAO m_quadFx;
 	ShaderProgram m_shaderFx;
+	ShaderProgram m_shaderLighting;
 };
 

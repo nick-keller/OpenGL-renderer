@@ -26,10 +26,7 @@ Scene::~Scene()
 
 void Scene::render(const Camera& pCamera)
 {
-	drawSky(pCamera);
 	drawMeshs(pCamera);
-	drawAxis();
-	//drawNormals();
 }
 
 void Scene::updateProjectionMatrix()
@@ -70,6 +67,7 @@ void Scene::loadShaders()
 	loadShader("simpleTextured");
 	loadShader("forceColor");
 	loadShader("skybox");
+	loadShader("deferredGeometry");
 }
 
 void Scene::loadShader(std::string pName)
@@ -83,7 +81,7 @@ void Scene::loadMeshs()
 	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
 
 	m_meshs["cube"] = new Mesh("cube.obj", "rock");
-	m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["cube"]);
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["cube"]);
 
 	//m_meshs["dragon"] = new Mesh("dragon.obj");
 	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);

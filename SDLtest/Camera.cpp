@@ -18,6 +18,11 @@ mat4 Camera::getViewMatrix() const
 	return m_viewMatrix;
 }
 
+vec3 Camera::getEyePos()
+{
+	return m_position + vec3(0, 0, m_height);
+}
+
 void Camera::rotate(float h, float v)
 {
 	vec3 left = cross(m_up, m_lookAt);

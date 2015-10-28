@@ -6,8 +6,10 @@ Engine::Engine(int width, int height) :
 	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
 	m_scene((float) width / (float) height), 
 	m_deltaX(0), m_deltaY(0), 
-	m_postFx(width, height, true, GL_RENDERBUFFER),
-	m_shaderFx("basic.vert", "basic.frag")
+	m_postFx(width, height, GL_RENDERBUFFER),
+	m_gBuffer(width, height, GL_RENDERBUFFER),
+	m_shaderFx("basic.vert", "basic.frag"),
+	m_shaderLighting("deferredLighting.vert", "deferredLighting.frag")
 {
 	m_screen = {width, height};
 
@@ -15,28 +17,13 @@ Engine::Engine(int width, int height) :
 		m_keys[i] = false;
 	}
 
-	vec3 vertices[] = {
-		vec3(-1, -1, 0),
-		vec3(-1, 1, 0),
-		vec3(1, -1, 0),
-		vec3(1, 1, 0)
-	};
+	generateScreenQuad();
 
-	vec2 uvs[] = {
-		vec2(0, 0),
-		vec2(0, 1),
-		vec2(1, 0),
-		vec2(1, 1)
-	};
+	m_postFx.addColorBuffer(Texture::DIFFUSE);
 
-	uvec3 faces[] = {
-		uvec3(3, 1, 0),
-		uvec3(3, 0, 2)
-	};
-
-	m_quadFx.storeVertices(vector<vec3>(vertices, vertices + 4));
-	m_quadFx.storeUvs(vector<vec2>(uvs, uvs + 4));
-	m_quadFx.storeFaces(vector<uvec3>(faces, faces + 2));
+	m_gBuffer.addColorBuffer(Texture::GPOSITION, GL_RGB16F, GL_RGB, GL_FLOAT);
+	m_gBuffer.addColorBuffer(Texture::GNORMAL, GL_RGB16F, GL_RGB, GL_FLOAT);
+	m_gBuffer.addColorBuffer(Texture::GALBEDO);
 }
 
 
@@ -47,6 +34,7 @@ Engine::~Engine()
 void Engine::init()
 {
 	m_scene.addEntity("cube", translate(mat4(), vec3(2, 0, 0)));
+	m_scene.addEntity("cube", translate(scale(mat4(), vec3(2, 2, 2)), vec3(0, 0, -1.4)));
 }
 
 void Engine::update(Uint32 delta, SDL_Event& events)
@@ -108,20 +96,55 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 
 void Engine::render()
 {
-	m_postFx.bind();
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	// Geometry pass
+	m_gBuffer.bind();
+	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	m_scene.render(m_camera);
-
-	m_postFx.unbind();
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_gBuffer.unbind();
+	
+	glClearColor(.1f, .1f, .1f, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	m_shaderFx.use();
-	m_quadFx.bind();
+	// Sky
+	m_scene.drawSky(m_camera);
+
+	// Lighting pass
+	m_shaderLighting.use();
+	m_shaderLighting.updateUniform("in_EyePos", m_camera.getEyePos());
+	m_screenQuad.bind();
 	glDisable(GL_DEPTH_TEST);
-	m_postFx.getColorBuffer()->bind();
-	m_quadFx.drawTriangles();
-	m_quadFx.unbind();
+	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
+	m_gBuffer.getColorBuffer(FBO::NORMAL)->bind();
+	m_gBuffer.getColorBuffer(FBO::COLOR)->bind();
+	m_screenQuad.drawTriangles();
+	m_screenQuad.unbind();
+	m_shaderLighting.stop();
+}
+
+void Engine::generateScreenQuad()
+{
+	vec3 vertices[] = {
+		vec3(-1, -1, 0),
+		vec3(-1, 1, 0),
+		vec3(1, -1, 0),
+		vec3(1, 1, 0)
+	};
+
+	vec2 uvs[] = {
+		vec2(0, 0),
+		vec2(0, 1),
+		vec2(1, 0),
+		vec2(1, 1)
+	};
+
+	uvec3 faces[] = {
+		uvec3(3, 1, 0),
+		uvec3(3, 0, 2)
+	};
+
+	m_screenQuad.storeVertices(vector<vec3>(vertices, vertices + 4));
+	m_screenQuad.storeUvs(vector<vec2>(uvs, uvs + 4));
+	m_screenQuad.storeFaces(vector<uvec3>(faces, faces + 2));
 }

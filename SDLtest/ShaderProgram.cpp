@@ -17,11 +17,14 @@ ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
 
 	// Bind texture units
 	use();
-	updateUniform("textureDiffuse" , Texture::DIFFUSE);
-	updateUniform("textureSpecular", Texture::SPECULAR);
-	updateUniform("textureNormal"  , Texture::NORMAL);
-	updateUniform("textureBump"    , Texture::BUMP);
-	updateUniform("skybox"		   , Texture::CUBE);
+	updateUniform("textureDiffuse"	, Texture::DIFFUSE);
+	updateUniform("textureSpecular"	, Texture::SPECULAR);
+	updateUniform("textureNormal"	, Texture::NORMAL);
+	updateUniform("textureBump"		, Texture::BUMP);
+	updateUniform("skybox"			, Texture::CUBE);
+	updateUniform("gPosition"		, Texture::GPOSITION);
+	updateUniform("gNormal"			, Texture::GNORMAL);
+	updateUniform("gAlbedo"			, Texture::GALBEDO);
 	stop();
 }
 

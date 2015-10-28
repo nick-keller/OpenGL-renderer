@@ -20,6 +20,7 @@ public:
 	~Camera();
 
 	glm::mat4 getViewMatrix() const;
+	vec3 getEyePos();
 
 	void rotate(float h, float v);
 	void moveForward(float length);

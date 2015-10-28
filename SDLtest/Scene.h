@@ -23,6 +23,8 @@ public:
 	~Scene();
 
 	void render(const Camera& pCamera);
+	void drawSky(const Camera& pCamera);
+
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
 	vector<Entity*>* getEntities();
 
@@ -33,7 +35,6 @@ private:
 	void loadShader(string pName);
 	void loadMeshs();
 
-	void drawSky(const Camera& pCamera);
 	void drawMeshs(const Camera& pCamera);
 	void drawAxis();
 	void drawNormals();

@@ -176,6 +176,10 @@
   <ItemGroup>
     <None Include="basic.frag" />
     <None Include="basic.vert" />
+    <None Include="deferredLighting.frag" />
+    <None Include="deferredLighting.vert" />
+    <None Include="deferredGeometry.frag" />
+    <None Include="deferredGeometry.vert" />
     <None Include="forceColor.frag" />
     <None Include="forceColor.vert" />
     <None Include="simpleShadow.frag" />

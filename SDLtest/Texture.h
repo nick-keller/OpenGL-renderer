@@ -11,10 +11,10 @@ using namespace std;
 class Texture
 {
 public:
-	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP, CUBE};
+	enum Type {DIFFUSE, SPECULAR, NORMAL, BUMP, CUBE, GPOSITION, GNORMAL, GALBEDO};
 
 	Texture(string pFilePath, Type pType);
-	Texture(int width, int height);
+	Texture(Type pType, int width, int height, GLint internalFormat = GL_RGB, GLenum format = GL_RGB, GLenum type = GL_UNSIGNED_BYTE, GLint interpolation = GL_NEAREST);
 	~Texture();
 
 	GLuint getId();
