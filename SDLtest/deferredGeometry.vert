@@ -9,7 +9,6 @@ out vec3 position0;
 out vec3 normal0;
 out vec3 tangent0;
 out vec2 texCoord0;
-out vec3 eyePos0;
 out mat3 TBN;
 
 uniform mat4 projection;
@@ -17,15 +16,16 @@ uniform mat4 view;
 uniform mat4 model;
 
 void main() {
-	vec4 worldPosition = model * vec4(in_Vertex, 1);
+	vec4 viewPosition = view * model * vec4(in_Vertex, 1);
 
-	gl_Position = projection * view * worldPosition;
+	gl_Position = projection * viewPosition;
 
-	eyePos0 = (inverse(view) * vec4(0, 0, 0, 1)).xyz;
-	position0 = worldPosition.xyz;
-	normal0 = normalize(vec3(model * vec4(in_Normal, 0.0)));;
-	tangent0 = normalize(vec3(model * vec4(in_Tangent, 0.0)));;
+	position0 = viewPosition.xyz;
 	texCoord0 = in_TexCoord;
+	
+    mat3 normalMatrix = transpose(inverse(mat3(view * model)));
+	normal0 = normalMatrix * in_Normal;
+	tangent0 = normalMatrix * in_Tangent;
 	
 	vec3 N = normalize(normal0);
 	vec3 T = normalize(tangent0);

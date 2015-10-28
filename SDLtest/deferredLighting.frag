@@ -4,10 +4,11 @@ out vec4 FragColor;
 
 in vec2 texCoord0;
 
-uniform vec3 in_EyePos;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedo;
+uniform sampler2D ssaoLevel;
+uniform mat4 view;
 
 struct PointLight {
     vec3 position;  
@@ -37,7 +38,7 @@ void main()
 {
 	// Lights ------------------------------------
 	PointLight light1;
-	light1.position = vec3(0.5, 0, 0);
+	light1.position = vec4(view * vec4(0.5, 0, 0, 1)).xyz;
 	light1.color = vec3(.2, 1, .2);
 	light1.attenuation = 1;
 
@@ -46,16 +47,16 @@ void main()
 	light2.strength = .2;
 	
 	SpotLight light3;
-    light3.position = vec3(1.2, 1.2, -.8);
+    light3.position = vec4(view * vec4(1.2, 1.2, -.8, 1)).xyz;
     light3.color = vec3(1, .2, .2);
-	light3.direction = vec3(1, -1, 1);
+	light3.direction = mat3(view) * vec3(1, -1, 1);
 	light3.spread = .9;
 	light3.outerSpread = .8;
 	light3.attenuation = .1;
 
 	// Actual stuff ---------------------------
 	vec3 position = texture(gPosition, texCoord0).rgb;
-	vec3 toEye = normalize(in_EyePos - position);
+	vec3 toEye = normalize(vec3(0,0,0) - position);
 	vec3 normal = texture(gNormal, texCoord0).rgb;
 
 	if(normal == vec3(0,0,0)) {
@@ -112,5 +113,5 @@ vec3 computeLighting(SpotLight light, vec3 position, vec3 normal, vec3 toEye) {
 }
 
 vec3 computeLighting(AmbiantLight light) {
-	return light.color * light.strength;
+	return light.color * light.strength * texture(ssaoLevel, texCoord0).r;
 }

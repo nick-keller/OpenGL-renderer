@@ -32,6 +32,7 @@ int WinMain()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glClearColor(0, 0, 0, 1);
 
 	Engine engine = Engine(desktop.w /1.5, desktop.h /1.5);
 	engine.init();

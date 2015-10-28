@@ -36,6 +36,21 @@ void FBO::unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void FBO::clear(GLbitfield mask)
+{
+	glClear(mask);
+}
+
+void FBO::enableDepthTest(bool enable)
+{
+	if (enable) {
+		glEnable(GL_DEPTH_TEST);
+	}
+	else {
+		glDisable(GL_DEPTH_TEST);
+	}
+}
+
 void FBO::addColorBuffer(Texture::Type attachement, GLint internalFormat, GLenum format, GLenum type)
 {
 	bind();

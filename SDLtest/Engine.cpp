@@ -5,30 +5,40 @@
 Engine::Engine(int width, int height) :
 	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
 	m_scene((float) width / (float) height), 
+	m_screen({ width, height }),
 	m_deltaX(0), m_deltaY(0), 
 	m_postFx(width, height, GL_RENDERBUFFER),
 	m_gBuffer(width, height, GL_RENDERBUFFER),
+	m_ssaoBuffer(width, height),
+	m_ssaoBlurBuffer(width, height),
 	m_shaderFx("basic.vert", "basic.frag"),
-	m_shaderLighting("deferredLighting.vert", "deferredLighting.frag")
+	m_shaderLighting("deferredLighting.vert", "deferredLighting.frag"),
+	m_shaderSsao("ssao.vert", "ssao.frag"),
+	m_shaderBlur("blur.vert", "blur.frag"),
+	m_ssaoNoise(NULL)
 {
-	m_screen = {width, height};
-
 	for (int i(0); i < 5; ++i) {
 		m_keys[i] = false;
 	}
 
 	generateScreenQuad();
+	generateSsaoKernel();
+	generateSsaoNoise();
 
 	m_postFx.addColorBuffer(Texture::DIFFUSE);
 
-	m_gBuffer.addColorBuffer(Texture::GPOSITION, GL_RGB16F, GL_RGB, GL_FLOAT);
+	m_gBuffer.addColorBuffer(Texture::GPOSITION, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	m_gBuffer.addColorBuffer(Texture::GNORMAL, GL_RGB16F, GL_RGB, GL_FLOAT);
 	m_gBuffer.addColorBuffer(Texture::GALBEDO);
+
+	m_ssaoBuffer.addColorBuffer(Texture::SSAO, GL_RED, GL_RGB, GL_FLOAT);
+	m_ssaoBlurBuffer.addColorBuffer(Texture::SSAO, GL_RED, GL_RGB, GL_FLOAT);
 }
 
 
 Engine::~Engine()
 {
+	delete m_ssaoNoise;
 }
 
 void Engine::init()
@@ -98,13 +108,47 @@ void Engine::render()
 {
 	// Geometry pass
 	m_gBuffer.bind();
-	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
+	glClearColor(0, 0, 0, 0);
+	m_gBuffer.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_gBuffer.enableDepthTest();
 	m_scene.render(m_camera);
 	m_gBuffer.unbind();
+
+	// SSAO
+	m_ssaoBuffer.bind();
+	m_ssaoBuffer.clear(GL_COLOR_BUFFER_BIT);
+	m_ssaoBuffer.enableDepthTest(false);
+
+	m_shaderSsao.use();
+	m_shaderSsao.updateUniform("ssaoKernel", m_ssaoKernel);
+	m_shaderSsao.updateUniform("screenWidth", m_screen.w);
+	m_shaderSsao.updateUniform("screenHeight", m_screen.h);
+	m_shaderSsao.updateProjectionMatrix(m_scene.getProjectionMatrix());
+
+	m_screenQuad.bind();
+	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
+	m_gBuffer.getColorBuffer(FBO::NORMAL)->bind();
+	m_ssaoNoise->bind();
+	m_screenQuad.drawTriangles();
+	m_screenQuad.unbind();
+
+	m_shaderSsao.stop();
+
+	m_ssaoBuffer.unbind();
+
+	// Blur SSAO
+	m_ssaoBlurBuffer.bind();
+	m_shaderBlur.use();
+
+	m_screenQuad.bind();
+	m_ssaoBlurBuffer.enableDepthTest(false);
+	m_ssaoBuffer.getColorBuffer()->bind();
+	m_screenQuad.drawTriangles();
+	m_screenQuad.unbind();
+
+	m_shaderBlur.stop();
+	m_ssaoBlurBuffer.unbind();
 	
-	glClearColor(.1f, .1f, .1f, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Sky
@@ -113,11 +157,13 @@ void Engine::render()
 	// Lighting pass
 	m_shaderLighting.use();
 	m_shaderLighting.updateUniform("in_EyePos", m_camera.getEyePos());
+	m_shaderLighting.updateViewMatrix(m_camera.getViewMatrix());
 	m_screenQuad.bind();
 	glDisable(GL_DEPTH_TEST);
 	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
 	m_gBuffer.getColorBuffer(FBO::NORMAL)->bind();
 	m_gBuffer.getColorBuffer(FBO::COLOR)->bind();
+	m_ssaoBlurBuffer.getColorBuffer()->bind();
 	m_screenQuad.drawTriangles();
 	m_screenQuad.unbind();
 	m_shaderLighting.stop();
@@ -147,4 +193,54 @@ void Engine::generateScreenQuad()
 	m_screenQuad.storeVertices(vector<vec3>(vertices, vertices + 4));
 	m_screenQuad.storeUvs(vector<vec2>(uvs, uvs + 4));
 	m_screenQuad.storeFaces(vector<uvec3>(faces, faces + 2));
+}
+
+void Engine::generateSsaoKernel()
+{
+	uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
+	default_random_engine generator;
+
+	for (GLuint i(0); i < 16; ++i)
+	{
+		// Random direction
+		vec3 sample(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator)
+			);
+		sample = normalize(sample);
+
+		// Random magnitude
+		sample *= randomFloats(generator);
+
+		// More samples in the center
+		GLfloat scale = GLfloat(i) / 64.0;
+		scale = lerp(0.1f, 1.0f, scale * scale);
+		sample *= scale;
+
+		m_ssaoKernel.push_back(sample);
+	}
+}
+
+void Engine::generateSsaoNoise()
+{
+	uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
+	default_random_engine generator;
+
+	vector<vec3> ssaoNoise;
+	for (GLuint i = 0; i < 16; i++)
+	{
+		vec3 noise(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			0.0f);
+		ssaoNoise.push_back(noise);
+	}
+
+	m_ssaoNoise = new Texture(Texture::NOISE, 4, 4, GL_RGB16F, GL_RGB, GL_FLOAT, GL_NEAREST, GL_REPEAT, &ssaoNoise[0]);
+}
+
+GLfloat Engine::lerp(GLfloat a, GLfloat b, GLfloat f)
+{
+	return a + f * (b - a);
 }

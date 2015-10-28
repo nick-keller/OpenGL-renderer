@@ -80,7 +80,7 @@ void Scene::loadMeshs()
 	//m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
 	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
 
-	m_meshs["cube"] = new Mesh("cube.obj", "rock");
+	m_meshs["cube"] = new Mesh("cube.obj", "stone");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["cube"]);
 
 	//m_meshs["dragon"] = new Mesh("dragon.obj");
@@ -186,4 +186,9 @@ void Scene::addEntity(string pName, mat4 pModelMatrix)
 vector<Entity*>* Scene::getEntities()
 {
 	return &m_entities;
+}
+
+mat4 Scene::getProjectionMatrix()
+{
+	return m_projectionMatrix;
 }

@@ -27,6 +27,7 @@ public:
 
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
 	vector<Entity*>* getEntities();
+	mat4 getProjectionMatrix();
 
 private:
 	void updateProjectionMatrix();

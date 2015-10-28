@@ -1,31 +1,40 @@
 #version 400 core
 
-layout (location = 0) out vec3 gPosition;
-layout (location = 1) out vec3 gNormal;
-layout (location = 2) out vec3 gAlbedo;
+out vec4 gPosition;
+out vec3 gNormal;
+out vec3 gAlbedo;
 
 in vec3 position0;
 in vec3 normal0;
 in vec3 tangent0;
 in vec2 texCoord0;
-in vec3 eyePos0;
 in mat3 TBN;
 
 uniform sampler2D textureDiffuse;
 uniform sampler2D textureNormal;
 uniform sampler2D textureBump;
 
+float LinearizeDepth(float depth) ;
 vec3 computeNormal(vec2 texCoords);
 vec2 ParallaxMapping(vec3 toEye);
 
 void main() {
-	vec3 toEye = normalize(eyePos0 - position0);
+	vec3 toEye = normalize(vec3(0, 0, 0) - position0);
 	vec2 texCoords = ParallaxMapping(toEye);
 	vec3 normal = computeNormal(texCoords);
 	
-	gPosition = position0;
+	gPosition.xyz = position0;
+	gPosition.a = LinearizeDepth(gl_FragCoord.z);
 	gNormal = normal;
     gAlbedo = texture(textureDiffuse, texCoords).rgb;
+}
+
+float LinearizeDepth(float depth) 
+{
+	float near = .1; 
+	float far  = 100.0; 
+    float z = depth * 2.0 - 1.0; // Back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));	
 }
 
 vec2 ParallaxMapping(vec3 toEye)

@@ -25,6 +25,8 @@ ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
 	updateUniform("gPosition"		, Texture::GPOSITION);
 	updateUniform("gNormal"			, Texture::GNORMAL);
 	updateUniform("gAlbedo"			, Texture::GALBEDO);
+	updateUniform("ssaoNoise"		, Texture::NOISE);
+	updateUniform("ssaoLevel"		, Texture::SSAO);
 	stop();
 }
 
@@ -130,6 +132,18 @@ void ShaderProgram::updateUniform(string pName, Texture::Type pType)
 void ShaderProgram::updateUniform(string pName, vec3 pVector)
 {
 	glUniform3f(getUniformLocation(pName), pVector.x, pVector.y, pVector.z);
+}
+
+void ShaderProgram::updateUniform(string pName, int pInt)
+{
+	glUniform1i(getUniformLocation(pName), pInt);
+}
+
+void ShaderProgram::updateUniform(string pName, vector<vec3> pVectorArray)
+{
+	for (int i(0); i < pVectorArray.size(); ++i) {
+		glUniform3fv(getUniformLocation(pName + "[" + std::to_string(i) + "]"), 1, &pVectorArray[i][0]);
+	}
 }
 
 void ShaderProgram::updateUniform(string pName, mat4& pMatrix)

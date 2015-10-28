@@ -11,11 +11,13 @@ public:
 
 	enum Attachement {POSITION, NORMAL, COLOR};
 
-	FBO(int width, int height, GLenum depthBuffer);
+	FBO(int width, int height, GLenum depthBuffer = GL_NONE);
 	~FBO();
 
 	void bind();
 	void unbind();
+	void clear(GLbitfield mask);
+	void enableDepthTest(bool enable = true);
 
 	void addColorBuffer(Texture::Type attachement, GLint internalFormat = GL_RGB, GLenum format = GL_RGB, GLenum type = GL_UNSIGNED_BYTE);
 	Texture* getColorBuffer(int index = 0);

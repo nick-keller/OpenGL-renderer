@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <random>
 #include "Scene.h"
 #include "EngineUtils.h"
 #include "FBO.h"
@@ -29,6 +30,9 @@ public:
 
 private:
 	void generateScreenQuad();
+	void generateSsaoKernel();
+	void generateSsaoNoise();
+	GLfloat lerp(GLfloat a, GLfloat b, GLfloat f);
 
 private:
 	Camera m_camera;
@@ -43,5 +47,12 @@ private:
 	FBO m_postFx;
 	ShaderProgram m_shaderFx;
 	ShaderProgram m_shaderLighting;
+
+	FBO m_ssaoBuffer;
+	FBO m_ssaoBlurBuffer;
+	vector<vec3> m_ssaoKernel;
+	Texture* m_ssaoNoise;
+	ShaderProgram m_shaderSsao;
+	ShaderProgram m_shaderBlur;
 };
 
