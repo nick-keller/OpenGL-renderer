@@ -1,0 +1,14 @@
+LABEL	cube
+SCALE	1 1 1
+COOR	2 0 0
+END
+
+LABEL	cube
+SCALE	2 2 2
+COOR	0 0 -1.4
+END
+
+LABEL	sphere
+SCALE	3 3 3
+COOR	2 0 2
+END

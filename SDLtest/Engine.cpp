@@ -3,6 +3,7 @@
 
 
 Engine::Engine(int width, int height) :
+
 	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
 	m_scene((float) width / (float) height), 
 	m_screen({ width, height }),
@@ -43,9 +44,13 @@ Engine::~Engine()
 
 void Engine::init()
 {
-	m_scene.addEntity("cube", translate(mat4(), vec3(2, 0, 0)));
-	m_scene.addEntity("cube", translate(scale(mat4(), vec3(2, 2, 2)), vec3(0, 0, -1.4)));
+	Loader& vLoader = Loader(&m_scene);
+	//thread loadingThread(bind(&Loader::load, vLoader), this);
+	//loadingThread.join();
+	vLoader.load();
 }
+
+
 
 void Engine::update(Uint32 delta, SDL_Event& events)
 {

@@ -16,9 +16,12 @@ using namespace glm;
 typedef map<string, ShaderProgram*> ShaderList;
 typedef map<string, Mesh*> MeshList;
 
+
+
 class Scene
 {
 public:
+
 	Scene(double pRatio, double pAngle = 70, double pNear = 0.1, double pFar = 100);
 	~Scene();
 
@@ -28,12 +31,15 @@ public:
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
 	vector<Entity*>* getEntities();
 	mat4 getProjectionMatrix();
+	MeshList getMeshList();
+	void addMesh(string pLabel, string pFile, string pShaderType, string pTexture);
+	void loadShader(string pName);
 
 private:
 	void updateProjectionMatrix();
 	void createAxis();
 	void loadShaders();
-	void loadShader(string pName);
+	
 	void loadMeshs();
 
 	void drawMeshs(const Camera& pCamera);

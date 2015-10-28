@@ -7,8 +7,11 @@
 #include "FBO.h"
 #include "ShaderProgram.h"
 #include "VAO.h"
+#include "Loader.h"
 
 using namespace EngineUtils;
+
+
 
 class Engine
 {
@@ -54,5 +57,6 @@ private:
 	Texture* m_ssaoNoise;
 	ShaderProgram m_shaderSsao;
 	ShaderProgram m_shaderBlur;
+
 };
 

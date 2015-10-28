@@ -6,7 +6,6 @@ Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar), m_skyboxMap("sky"), m_skybox("cube.obj")
 {
 	loadShaders();
-	loadMeshs();
 
 	updateProjectionMatrix();
 	createAxis();
@@ -75,16 +74,10 @@ void Scene::loadShader(std::string pName)
 	m_shaders[pName] = new ShaderProgram(pName + ".vert", pName + ".frag");
 }
 
-void Scene::loadMeshs()
-{
-	//m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
-	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
 
-	m_meshs["cube"] = new Mesh("cube.obj", "stone");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["cube"]);
-
-	//m_meshs["dragon"] = new Mesh("dragon.obj");
-	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
+void Scene::addMesh(string pLabel, string pFile, string pShaderType, string pTexture) {
+	m_meshs[pLabel] = new Mesh(pFile, pTexture);
+	m_shaderMeshs[m_shaders[pShaderType]].push_back(m_meshs[pLabel]);
 }
 
 
@@ -191,4 +184,7 @@ vector<Entity*>* Scene::getEntities()
 mat4 Scene::getProjectionMatrix()
 {
 	return m_projectionMatrix;
+}
+MeshList Scene::getMeshList() {
+	return m_meshs;
 }
