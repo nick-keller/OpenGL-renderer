@@ -83,6 +83,15 @@ void Scene::loadMeshs()
 	m_meshs["cube"] = new Mesh("cube.obj", "stone");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["cube"]);
 
+	m_meshs["road1"] = new Mesh("road1.obj", "road");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
+
+	m_meshs["road2"] = new Mesh("road2.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road2"]);
+
+	m_meshs["road3"] = new Mesh("road3.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
+
 	//m_meshs["dragon"] = new Mesh("dragon.obj");
 	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
 }

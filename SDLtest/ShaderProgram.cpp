@@ -27,6 +27,7 @@ ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
 	updateUniform("gAlbedo"			, Texture::GALBEDO);
 	updateUniform("ssaoNoise"		, Texture::NOISE);
 	updateUniform("ssaoLevel"		, Texture::SSAO);
+	updateUniform("bloom"			, Texture::BLOOM);
 	stop();
 }
 

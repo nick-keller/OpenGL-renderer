@@ -25,7 +25,8 @@ Engine::Engine(int width, int height) :
 	generateSsaoKernel();
 	generateSsaoNoise();
 
-	m_postFx.addColorBuffer(Texture::DIFFUSE);
+	m_postFx.addColorBuffer(Texture::DIFFUSE, GL_RGB16F, GL_RGB, GL_FLOAT);
+	m_postFx.addColorBuffer(Texture::BLOOM);
 
 	m_gBuffer.addColorBuffer(Texture::GPOSITION, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	m_gBuffer.addColorBuffer(Texture::GNORMAL, GL_RGB16F, GL_RGB, GL_FLOAT);
@@ -43,8 +44,11 @@ Engine::~Engine()
 
 void Engine::init()
 {
-	m_scene.addEntity("cube", translate(mat4(), vec3(2, 0, 0)));
-	m_scene.addEntity("cube", translate(scale(mat4(), vec3(2, 2, 2)), vec3(0, 0, -1.4)));
+	//m_scene.addEntity("cube", translate(mat4(), vec3(2, 0, 0)));
+	//m_scene.addEntity("cube", translate(scale(mat4(), vec3(2, 2, 2)), vec3(0, 0, -1.4)));
+	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
+	m_scene.addEntity("road2");
+	m_scene.addEntity("road3", translate(rotate(mat4(), 180.f, vec3(0, 0, 1)), vec3(12, 0, 0)));
 }
 
 void Engine::update(Uint32 delta, SDL_Event& events)
@@ -114,6 +118,7 @@ void Engine::render()
 	m_scene.render(m_camera);
 	m_gBuffer.unbind();
 
+	//**
 	// SSAO
 	m_ssaoBuffer.bind();
 	m_ssaoBuffer.clear(GL_COLOR_BUFFER_BIT);
@@ -148,18 +153,19 @@ void Engine::render()
 
 	m_shaderBlur.stop();
 	m_ssaoBlurBuffer.unbind();
-	
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	// Sky
-	m_scene.drawSky(m_camera);
+	//*/
 
 	// Lighting pass
+	m_postFx.bind();
+	m_postFx.enableDepthTest(false);
+	m_postFx.clear(GL_COLOR_BUFFER_BIT);
+
+	m_scene.drawSky(m_camera);
+
 	m_shaderLighting.use();
 	m_shaderLighting.updateUniform("in_EyePos", m_camera.getEyePos());
 	m_shaderLighting.updateViewMatrix(m_camera.getViewMatrix());
 	m_screenQuad.bind();
-	glDisable(GL_DEPTH_TEST);
 	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
 	m_gBuffer.getColorBuffer(FBO::NORMAL)->bind();
 	m_gBuffer.getColorBuffer(FBO::COLOR)->bind();
@@ -167,6 +173,21 @@ void Engine::render()
 	m_screenQuad.drawTriangles();
 	m_screenQuad.unbind();
 	m_shaderLighting.stop();
+
+	m_postFx.unbind();
+
+	// Post FX
+	glClear(GL_COLOR_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+	m_shaderFx.use();
+
+	m_screenQuad.bind();
+	m_postFx.getColorBuffer(0)->bind();
+	//m_postFx.getColorBuffer(1)->bind();
+	m_screenQuad.drawTriangles();
+	m_screenQuad.unbind();
+
+	m_shaderFx.stop();
 }
 
 void Engine::generateScreenQuad()

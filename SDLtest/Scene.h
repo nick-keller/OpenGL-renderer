@@ -24,6 +24,8 @@ public:
 
 	void render(const Camera& pCamera);
 	void drawSky(const Camera& pCamera);
+	void drawNormals();
+	void drawAxis();
 
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
 	vector<Entity*>* getEntities();
@@ -37,8 +39,6 @@ private:
 	void loadMeshs();
 
 	void drawMeshs(const Camera& pCamera);
-	void drawAxis();
-	void drawNormals();
 
 private:
 	mat4 m_projectionMatrix;

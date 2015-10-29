@@ -39,11 +39,11 @@ int WinMain()
 
 	do
 	{
-		SDL_PollEvent(&events);
 		time = SDL_GetTicks();
 		delta = time - prevTime;
 		prevTime = time;
 
+		SDL_PollEvent(&events);
 		engine.update(delta, events);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
