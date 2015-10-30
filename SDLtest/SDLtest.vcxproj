@@ -199,6 +199,11 @@
     <None Include="ssao.frag" />
     <None Include="ssao.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Map.txt" />
+    <Text Include="MeshLoader.txt" />
+    <Text Include="Shaders.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

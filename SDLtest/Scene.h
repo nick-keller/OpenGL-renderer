@@ -29,11 +29,13 @@ public:
 	void drawSky(const Camera& pCamera);
 
 	void addEntity(string pName, mat4 pModelMatrix = mat4());
+	Entity* addEntityAndRetrieve(string pName, mat4 pModelMatrix = mat4());
 	vector<Entity*>* getEntities();
 	mat4 getProjectionMatrix();
 	MeshList getMeshList();
 	void addMesh(string pLabel, string pFile, string pShaderType, string pTexture);
 	void loadShader(string pName);
+	void init();
 
 private:
 	void updateProjectionMatrix();

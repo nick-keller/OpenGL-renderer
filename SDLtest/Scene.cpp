@@ -5,8 +5,10 @@
 Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar), m_skyboxMap("sky"), m_skybox("cube.obj")
 {
-	loadShaders();
 
+}
+
+void Scene::init() {
 	updateProjectionMatrix();
 	createAxis();
 }
@@ -174,6 +176,15 @@ void Scene::addEntity(string pName, mat4 pModelMatrix)
 
 	m_meshEntities[m_meshs[pName]].push_back(entity);
 	m_entities.push_back(entity);
+}
+
+Entity* Scene::addEntityAndRetrieve(string pName, mat4 pModelMatrix) {
+	Entity* entity = new Entity(m_meshs[pName], pModelMatrix);
+
+	m_meshEntities[m_meshs[pName]].push_back(entity);
+	m_entities.push_back(entity);
+
+	return entity;
 }
 
 vector<Entity*>* Scene::getEntities()
