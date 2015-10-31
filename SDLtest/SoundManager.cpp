@@ -72,3 +72,15 @@ void SoundManager::resumeMusic() {
 	if (m_state == PAUSED)
 		Mix_ResumeMusic();
 }
+
+void SoundManager::setVolume(int value) {
+	if (value > 128) value = 128;
+	if (value < 0)	 value = 0;
+	m_volume = value;
+	Mix_VolumeMusic(m_volume);
+}
+
+void SoundManager::changeVolume(int value){
+	m_volume += value;
+	Mix_VolumeMusic(m_volume);
+}

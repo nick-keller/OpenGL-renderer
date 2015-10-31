@@ -27,6 +27,9 @@ public:
 	void pauseMusic();
 	void resumeMusic();
 
+	void setVolume(int value);
+	void changeVolume(int value);
+
 
 	bool isStopped() const
 	{
@@ -48,6 +51,7 @@ public:
 private:
 	SoundManager() {
 		initAudioDevice();
+		setVolume(40);
 	}
 	~SoundManager() {
 		if (m_music != nullptr)
@@ -93,6 +97,7 @@ private :
 	static AudioState m_state;
 
 	Mix_Music* m_music;
+	int m_volume;
 };
 
 #endif
