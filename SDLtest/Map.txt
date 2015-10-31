@@ -28,8 +28,8 @@ PLACE	BEHIND	cube_A
 OFFSET	0 0 0
 END
 
-LABEL	cube
-NAME	cube_L
+LABEL	sphere
+NAME	sphere_L
 SCALE	1 1 1
 COOR	0 0 0
 PLACE	LEFT	cube_A

@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "Engine.h"
+#include "SoundManager.h"
 
 void displayLoadingScreen(SDL_Surface* screen, SDL_Window* window);
 
@@ -46,7 +47,8 @@ int WinMain()
 
 	std::cout << "hello" << std::endl;
 
-	
+	SoundManager* sm= SoundManager::Instance();
+	sm->playMusic("sounds/musics/DE_cyberpunkNight.mp3");
 
 	do
 	{
