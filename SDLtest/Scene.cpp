@@ -11,7 +11,7 @@ Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 void Scene::init() {
 	updateProjectionMatrix();
 	createAxis();
-
+	/*
 	m_meshs["road1"] = new Mesh("road1.obj", "road");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
 
@@ -20,7 +20,8 @@ void Scene::init() {
 
 	m_meshs["road3"] = new Mesh("road3.obj", "road2");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
-}
+	*/
+	}
 
 
 Scene::~Scene()

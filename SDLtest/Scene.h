@@ -35,6 +35,7 @@ public:
 	vector<Entity*>* getEntities();
 	mat4 getProjectionMatrix();
 	MeshList getMeshList();
+	
 	void addMesh(string pLabel, string pFile, string pShaderType, string pTexture);
 	void loadShader(string pName);
 	void init();

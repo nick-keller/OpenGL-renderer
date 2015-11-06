@@ -72,9 +72,6 @@
     <ClCompile Include="Loader.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="TBO.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
