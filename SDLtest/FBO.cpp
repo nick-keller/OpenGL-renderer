@@ -26,9 +26,25 @@ FBO::~FBO()
 	}
 }
 
+GLuint FBO::getId()
+{
+	return m_id;
+}
+
+int FBO::getWidth()
+{
+	return m_width;
+}
+
+int FBO::getHeight()
+{
+	return m_height;
+}
+
 void FBO::bind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_id);
+	glViewport(0, 0, m_width, m_height);
 }
 
 void FBO::unbind()
@@ -51,12 +67,28 @@ void FBO::enableDepthTest(bool enable)
 	}
 }
 
-void FBO::addColorBuffer(Texture::Type attachement, GLint internalFormat, GLenum format, GLenum type)
+void FBO::copyDepthTo(FBO & buffer)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, buffer.getId());
+	glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, buffer.getWidth(), buffer.getHeight(), GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	buffer.bind();
+}
+
+void FBO::copyColorBufferTo(FBO & buffer)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, buffer.getId());
+	glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, buffer.getWidth(), buffer.getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	bind();
+}
+
+void FBO::addColorBuffer(Texture::Type attachement, GLint internalFormat, GLenum format, GLenum type, GLint interpolation)
 {
 	bind();
 
 	int attachment = m_colorBuffers.size();
-	m_colorBuffers.push_back(new Texture(attachement, m_width, m_height, internalFormat, format, type));
+	m_colorBuffers.push_back(new Texture(attachement, m_width, m_height, internalFormat, format, type, interpolation));
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachment, GL_TEXTURE_2D, m_colorBuffers[attachment]->getId(), 0);
 
 	vector<GLuint> attachments;

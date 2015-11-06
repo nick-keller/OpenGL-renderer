@@ -123,6 +123,7 @@ void Mesh::LoadFromFile(string & pFilePath)
 		if (id == "vt") {
 			vec2 vt;
 			data >> vt.x >> vt.y;
+			vt.y = 1 - vt.y;
 			objUvs.push_back(vt);
 		}
 

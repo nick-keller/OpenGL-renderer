@@ -1,7 +1,7 @@
 #version 330 core
 
 out vec4 FragColor;
-//out vec4 bloom;
+out vec4 bloom;
 
 in vec2 texCoord0;
 
@@ -63,7 +63,7 @@ void main()
 
 	DirLight light4;
 	light4.direction =  mat3(view) * vec3(-.6, -1, -.7);
-	light4.color = vec3(.3, .5, .7);
+	light4.color = vec3(.3, .5, .7) * .5;
 
 	// Actual stuff ---------------------------
 	vec3 position = texture(gPosition, texCoord0).rgb;
@@ -81,11 +81,14 @@ void main()
 	lighting += computeLighting(light3, position, normal, toEye, oclusion);
 	lighting += computeLighting(light4, position, normal, toEye, oclusion);
 	
-	gl_FragColor = vec4(lighting, 1) * texture(gAlbedo, texCoord0) * oclusion;
+	FragColor = vec4(lighting, 1) * texture(gAlbedo, texCoord0) ;
 
-	//float brightness = dot(gl_FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    //if(brightness > .3)
-		//bloom = gl_FragColor;
+	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+	
+    if(brightness > .5)
+		bloom = FragColor;
+	else
+		bloom = vec4(0, 0, 0, 1);
 } 
 
 vec3 computeLighting(PointLight light, vec3 position, vec3 normal, vec3 toEye, float oclusion) {
@@ -104,7 +107,7 @@ vec3 computeLighting(PointLight light, vec3 position, vec3 normal, vec3 toEye, f
 	// Attenuation
 	float attenuation = 1 + light.attenuation * distance * distance;
 
-	return (diffuse + specular) / attenuation;
+	return (diffuse * oclusion + specular) / attenuation;
 }
 
 vec3 computeLighting(SpotLight light, vec3 position, vec3 normal, vec3 toEye, float oclusion) {
@@ -120,13 +123,13 @@ vec3 computeLighting(SpotLight light, vec3 position, vec3 normal, vec3 toEye, fl
 
 	// Specular
 	vec3 halfwayDir = normalize(lightDir + toEye);
-	float spec = pow(max(dot(normal, halfwayDir), 0), 32);
+	float spec = pow(max(dot(normal, halfwayDir), 0), 10);
 	vec3 specular = 1 * spec * light.color;
 
 	// Attenuation
 	float attenuation = 1 + light.attenuation * distance * distance;
 
-	return (diffuse + specular) / attenuation;
+	return (diffuse * oclusion + specular) / attenuation;
 }
 
 vec3 computeLighting(DirLight light, vec3 position, vec3 normal, vec3 toEye, float oclusion) {
@@ -141,7 +144,7 @@ vec3 computeLighting(DirLight light, vec3 position, vec3 normal, vec3 toEye, flo
 	float spec = pow(max(dot(normal, halfwayDir), 0), 32);
 	vec3 specular = 1 * spec * light.color;
 
-	return (diffuse + specular) * oclusion;
+	return (diffuse * oclusion + specular);
 }
 
 vec3 computeLighting(AmbiantLight light, float oclusion) {

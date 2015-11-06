@@ -44,7 +44,7 @@ void main()
         float sampleDepth = texture(gPosition, offset.xy).a;
         
         // range check & accumulate
-        float rangeCheck = smoothstep(0.0, 1.0, radius / 5 / abs(fragPos.a - sampleDepth ));
+        float rangeCheck = smoothstep(0.0, 1.0, radius / 8 / abs(fragPos.a - sampleDepth ));
         occlusion += (sampleDepth < -sample.z && sampleDepth != 0 ? 1.0 : 0.0) * rangeCheck;
     }
     occlusion = 1.0 - (occlusion / kernelSize);

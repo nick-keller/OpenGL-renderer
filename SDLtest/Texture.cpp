@@ -62,6 +62,15 @@ void Texture::setParameter(GLenum pName, GLint pParam)
 	unbind();
 }
 
+void Texture::setParameter(GLenum pName, float pParam)
+{
+	bind();
+
+	glTexParameterf(GL_TEXTURE_2D, pName, pParam);
+
+	unbind();
+}
+
 bool Texture::loadFromFile(std::string pFilePath, SDL_Surface **pSurface)
 {
 	*pSurface = IMG_Load(pFilePath.c_str());

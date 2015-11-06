@@ -29,6 +29,36 @@ void Scene::render(const Camera& pCamera)
 	drawMeshs(pCamera);
 }
 
+void Scene::fastRender(mat4 pViewMatrix)
+{
+	drawSky(pViewMatrix);
+	ShaderProgram* shader = m_shaders["fastRender"];
+
+	// Use shader and update view matrix
+	shader->use();
+	shader->updateViewMatrix(pViewMatrix);
+
+	for (int i(0); i < m_entities.size(); ++i) {
+		Entity* entity = m_entities[i];
+
+		// Bind mesh
+		entity->getMesh()->bind();
+
+		// Update model matrix and draw mesh
+		shader->updateModelMatrix(entity->getModelMatrix());
+		entity->getMesh()->draw();
+
+		entity->getMesh()->unbind();
+	}
+
+	shader->stop();
+}
+
+void Scene::drawSky(const Camera& pCamera)
+{
+	drawSky(pCamera.getViewMatrix());
+}
+
 void Scene::updateProjectionMatrix()
 {
 	m_projectionMatrix = perspective(m_angle, m_ratio, m_near, m_far);
@@ -68,6 +98,7 @@ void Scene::loadShaders()
 	loadShader("forceColor");
 	loadShader("skybox");
 	loadShader("deferredGeometry");
+	loadShader("fastRender");
 }
 
 void Scene::loadShader(std::string pName)
@@ -92,18 +123,27 @@ void Scene::loadMeshs()
 	m_meshs["road3"] = new Mesh("road3.obj", "road2");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
 
+	m_meshs["wood"] = new Mesh("wood.obj", "wood");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["wood"]);
+
+	m_meshs["lamp"] = new Mesh("lamp.obj", "signs");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["lamp"]);
+
+	m_meshs["elbox"] = new Mesh("elbox.obj", "signs");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["elbox"]);
+
 	//m_meshs["dragon"] = new Mesh("dragon.obj");
 	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
 }
 
 
-void Scene::drawSky(const Camera& pCamera)
+void Scene::drawSky(mat4 pViewMatrix)
 {
 	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
 	m_shaders["skybox"]->use();
-	m_shaders["skybox"]->updateViewMatrix(glm::mat4(glm::mat3(pCamera.getViewMatrix())));
+	m_shaders["skybox"]->updateViewMatrix(glm::mat4(glm::mat3(pViewMatrix)));
 	m_skybox.bind();
 	m_skyboxMap.bind();
 	m_skybox.draw();

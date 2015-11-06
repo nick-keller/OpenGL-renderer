@@ -182,8 +182,12 @@
     <None Include="deferredLighting.vert" />
     <None Include="deferredGeometry.frag" />
     <None Include="deferredGeometry.vert" />
+    <None Include="fastRender.frag" />
+    <None Include="fastRender.vert" />
     <None Include="forceColor.frag" />
     <None Include="forceColor.vert" />
+    <None Include="gaussian.frag" />
+    <None Include="gaussian.vert" />
     <None Include="simpleShadow.frag" />
     <None Include="simpleShadow.vert" />
     <None Include="simpleColor.frag" />
@@ -194,6 +198,8 @@
     <None Include="skybox.vert" />
     <None Include="ssao.frag" />
     <None Include="ssao.vert" />
+    <None Include="water.frag" />
+    <None Include="water.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
