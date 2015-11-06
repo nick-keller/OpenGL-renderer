@@ -6,7 +6,7 @@
 #include "Mesh.h"
 
 #define PLAYER_HEIGHT 2.f
-#define PLAYER_WIDTH .7f
+#define PLAYER_WIDTH .35f
 #define PLAYER_HALF_WIDTH PLAYER_WIDTH / 2.f
 #define PLAYER_EYES -.3f
 #define PLAYER_CROUCH 1.2f
@@ -28,6 +28,7 @@ public:
 	void move(vec3 delta);
 	void update(float delta);
 	void setCrouched(bool crouched);
+	mat4 getReflexted(float z);
 
 	AABB getBoundingBox();
 

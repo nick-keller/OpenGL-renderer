@@ -45,7 +45,7 @@ void Camera::moveForward(float length)
 
 void Camera::moveLeft(float length)
 {
-	vec3 left = cross(m_up, m_lookAt);
+	vec3 left = cross(m_up, normalize(vec3(m_lookAt.x, m_lookAt.y, 0)));
 
 	m_position.x += left.x * length;
 	m_position.y += left.y * length;
@@ -73,6 +73,15 @@ void Camera::update(float delta)
 void Camera::setCrouched(bool crouched)
 {
 	m_crouched = crouched;
+}
+
+mat4 Camera::getReflexted(float z)
+{
+	vec3 position = vec3(m_position.x, m_position.y, -(m_position.z - z) + z) - vec3(0, 0, m_height);
+	vec3 la = vec3(m_lookAt.x, m_lookAt.y, -m_lookAt.z);
+	vec3 up = vec3(m_up.x, m_up.y, -m_up.z);
+
+	return lookAt(position, position + la, up);
 }
 
 AABB Camera::getBoundingBox()

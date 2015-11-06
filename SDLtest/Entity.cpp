@@ -50,3 +50,8 @@ AABB Entity::getBoundingBox()
 
 	return boundingBox;
 }
+
+Mesh * Entity::getMesh()
+{
+	return m_mesh;
+}

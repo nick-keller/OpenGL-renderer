@@ -26,6 +26,8 @@ public:
 	~Scene();
 
 	void render(const Camera& pCamera);
+	void fastRender(mat4 pViewMatrix);
+	void drawSky(mat4 pViewMatrix);
 	void drawSky(const Camera& pCamera);
 	void drawNormals();
 	void drawAxis();

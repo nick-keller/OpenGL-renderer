@@ -24,6 +24,8 @@ public:
 	void updateUniform(string pName, vec3 pVector);
 	void updateUniform(string pName, int pInt);
 	void updateUniform(string pName, vector<vec3> pVectorArray);
+	void updateUniform(string pName, GLboolean pBool);
+	void updateUniform(string pName, float pFloat);
 
 	void updateUniform(string pName, mat4& pMatrix);
 	void updateUniform(GLint pLocation, mat4& pMatrix);

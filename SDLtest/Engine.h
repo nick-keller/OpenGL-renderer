@@ -33,6 +33,7 @@ public:
 
 private:
 	void generateScreenQuad();
+	void generateWaterQuad();
 	void generateSsaoKernel();
 	void generateSsaoNoise();
 	GLfloat lerp(GLfloat a, GLfloat b, GLfloat f);
@@ -58,5 +59,17 @@ private:
 	ShaderProgram m_shaderSsao;
 	ShaderProgram m_shaderBlur;
 
+
+	FBO* m_pingPong[2];
+	ShaderProgram m_shaderGaussian;
+
+	VAO m_waterQuad;
+	ShaderProgram m_shaderWater;
+	FBO m_waterReflexion;
+	FBO m_waterRefraction;
+	float m_waterHeight;
+	Texture m_waterDuDvMap;
+	Texture m_waterNormalMap;
+	float m_waterMoveFactor;
 };
 

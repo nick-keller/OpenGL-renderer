@@ -28,6 +28,8 @@ ShaderProgram::ShaderProgram(string pVertexFilePath, string pFragmentFilePath) :
 	updateUniform("ssaoNoise"		, Texture::NOISE);
 	updateUniform("ssaoLevel"		, Texture::SSAO);
 	updateUniform("bloom"			, Texture::BLOOM);
+	updateUniform("reflexion"		, Texture::REFLEXION);
+	updateUniform("dudvMap"			, Texture::DUDV);
 	stop();
 }
 
@@ -145,6 +147,16 @@ void ShaderProgram::updateUniform(string pName, vector<vec3> pVectorArray)
 	for (int i(0); i < pVectorArray.size(); ++i) {
 		glUniform3fv(getUniformLocation(pName + "[" + std::to_string(i) + "]"), 1, &pVectorArray[i][0]);
 	}
+}
+
+void ShaderProgram::updateUniform(string pName, GLboolean pBool)
+{
+	glUniform1i(getUniformLocation(pName), pBool);
+}
+
+void ShaderProgram::updateUniform(string pName, float pFloat)
+{
+	glUniform1f(getUniformLocation(pName), pFloat);
 }
 
 void ShaderProgram::updateUniform(string pName, mat4& pMatrix)

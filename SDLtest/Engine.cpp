@@ -3,31 +3,45 @@
 
 
 Engine::Engine(int width, int height) :
+<<<<<<< HEAD
 
 	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
 	m_scene((float) width / (float) height), 
+=======
+	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)),
+	m_scene((float)width / (float)height),
+>>>>>>> masterSafe
 	m_screen({ width, height }),
-	m_deltaX(0), m_deltaY(0), 
+	m_deltaX(0), m_deltaY(0),
 	m_postFx(width, height, GL_RENDERBUFFER),
 	m_gBuffer(width, height, GL_RENDERBUFFER),
 	m_ssaoBuffer(width, height),
 	m_ssaoBlurBuffer(width, height),
+	m_waterReflexion(width, height, GL_RENDERBUFFER),
+	m_waterRefraction(width, height),
 	m_shaderFx("basic.vert", "basic.frag"),
 	m_shaderLighting("deferredLighting.vert", "deferredLighting.frag"),
 	m_shaderSsao("ssao.vert", "ssao.frag"),
 	m_shaderBlur("blur.vert", "blur.frag"),
-	m_ssaoNoise(NULL)
+	m_shaderGaussian("gaussian.vert", "gaussian.frag"),
+	m_shaderWater("water.vert", "water.frag"),
+	m_ssaoNoise(NULL),
+	m_waterHeight(-.05),
+	m_waterDuDvMap("water_dudv.jpg", Texture::DUDV),
+	m_waterNormalMap("water_normal.jpg", Texture::NORMAL),
+	m_waterMoveFactor(0)
 {
 	for (int i(0); i < 5; ++i) {
 		m_keys[i] = false;
 	}
 
 	generateScreenQuad();
+	generateWaterQuad();
 	generateSsaoKernel();
 	generateSsaoNoise();
 
 	m_postFx.addColorBuffer(Texture::DIFFUSE, GL_RGB16F, GL_RGB, GL_FLOAT);
-	m_postFx.addColorBuffer(Texture::BLOOM);
+	m_postFx.addColorBuffer(Texture::BLOOM, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR);
 
 	m_gBuffer.addColorBuffer(Texture::GPOSITION, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	m_gBuffer.addColorBuffer(Texture::GNORMAL, GL_RGB16F, GL_RGB, GL_FLOAT);
@@ -35,6 +49,15 @@ Engine::Engine(int width, int height) :
 
 	m_ssaoBuffer.addColorBuffer(Texture::SSAO, GL_RED, GL_RGB, GL_FLOAT);
 	m_ssaoBlurBuffer.addColorBuffer(Texture::SSAO, GL_RED, GL_RGB, GL_FLOAT);
+
+	m_waterReflexion.addColorBuffer(Texture::REFLEXION);
+	m_waterRefraction.addColorBuffer(Texture::DIFFUSE);
+
+	int f = 4;
+	m_pingPong[0] = new FBO(width /f, height /f);
+	m_pingPong[1] = new FBO(width /f, height /f);
+	m_pingPong[0]->addColorBuffer(Texture::BLOOM, GL_RGB16F, GL_RGB, GL_FLOAT, GL_LINEAR);
+	m_pingPong[1]->addColorBuffer(Texture::BLOOM, GL_RGB16F, GL_RGB, GL_FLOAT, GL_LINEAR);
 }
 
 
@@ -45,15 +68,18 @@ Engine::~Engine()
 
 void Engine::init()
 {
-	
-	//m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
-	//m_scene.addEntity("road2");
-	//m_scene.addEntity("road3", translate(rotate(mat4(), 180.f, vec3(0, 0, 1)), vec3(12, 0, 0)));
-	
-	
+	/*
 	Loader& vLoader = Loader(&m_scene);
 	vLoader.load();
-	
+	*/
+	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
+	m_scene.addEntity("elbox", translate(mat4(), vec3(3.6, 0, 0)));
+	m_scene.addEntity("road2");
+	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(0, 3.5, 0)), 180.f, vec3(0, 0, 1)));
+	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-2, 3.5, 0)), 180.f, vec3(0, 0, 1)));
+	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-4, 3.5, 0)), 180.f, vec3(0, 0, 1)));
+	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-6, 3.5, 0)), 180.f, vec3(0,0,1)));
+	m_scene.addEntity("road3", translate(rotate(mat4(), 180.f, vec3(0, 0, 1)), vec3(12, 0, 0)));
 }
 
 
@@ -106,6 +132,11 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 	m_camera.rotate(-m_deltaX / 10.f, m_deltaY / 10.f);
 	m_camera.update(delta);
 
+	m_waterMoveFactor += delta / 1000.f * 0.03f;
+	if (m_waterMoveFactor >= 1) {
+		m_waterMoveFactor -= 1;
+	}
+
 	// Check collisions
 	vector<Entity*>* entities = m_scene.getEntities();
 	for (int i(0); i < entities->size(); ++i) {
@@ -125,7 +156,16 @@ void Engine::render()
 	m_scene.render(m_camera);
 	m_gBuffer.unbind();
 
-	//**
+	// Water reflexion
+	m_waterReflexion.bind();
+	glClearColor(0, 0, 0, 0);
+	glEnable(GL_CLIP_DISTANCE0);
+	m_waterReflexion.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_waterReflexion.enableDepthTest();
+	m_scene.fastRender(m_camera.getReflexted(m_waterHeight));
+	glDisable(GL_CLIP_DISTANCE0);
+	m_waterReflexion.unbind();
+
 	// SSAO
 	m_ssaoBuffer.bind();
 	m_ssaoBuffer.clear(GL_COLOR_BUFFER_BIT);
@@ -160,7 +200,6 @@ void Engine::render()
 
 	m_shaderBlur.stop();
 	m_ssaoBlurBuffer.unbind();
-	//*/
 
 	// Lighting pass
 	m_postFx.bind();
@@ -181,16 +220,65 @@ void Engine::render()
 	m_screenQuad.unbind();
 	m_shaderLighting.stop();
 
+	// Render extra details
+	m_gBuffer.copyDepthTo(m_postFx);
+	m_postFx.copyColorBufferTo(m_waterRefraction);
+	m_postFx.enableDepthTest();
+	m_scene.drawAxis();
+
+	// Render water
+	m_shaderWater.use();
+	m_shaderWater.updateViewMatrix(m_camera.getViewMatrix());
+	m_shaderWater.updateProjectionMatrix(m_scene.getProjectionMatrix());
+	m_shaderWater.updateUniform("moveFactor", m_waterMoveFactor);
+	m_waterReflexion.getColorBuffer()->bind();
+	m_waterRefraction.getColorBuffer()->bind();
+	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	m_waterDuDvMap.bind();
+	m_waterNormalMap.bind();
+	m_waterQuad.bind();
+	m_waterQuad.drawTriangles();
+	m_waterQuad.unbind();
+	m_shaderWater.stop();
+	glDisable(GL_BLEND);
+
 	m_postFx.unbind();
+
+	// Bloom
+	GLboolean horizontal = true, first_iteration = true;
+	m_shaderGaussian.use();
+	for (GLuint i = 0; i < 4; i++)
+	{
+		m_pingPong[horizontal]->bind();
+		m_shaderGaussian.updateUniform("horizontal", horizontal);
+
+		if (first_iteration) {
+			m_postFx.getColorBuffer(1)->bind();
+		}
+		else {
+			m_pingPong[!horizontal]->getColorBuffer()->bind();
+		}
+
+		m_screenQuad.bind();
+		m_screenQuad.drawTriangles();
+		m_screenQuad.unbind();
+
+		horizontal = !horizontal;
+		first_iteration = false;
+	}
+	m_pingPong[0]->unbind();
 
 	// Post FX
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDisable(GL_DEPTH_TEST);
+	glViewport(0, 0, m_screen.w, m_screen.h);
 	m_shaderFx.use();
 
 	m_screenQuad.bind();
 	m_postFx.getColorBuffer(0)->bind();
-	//m_postFx.getColorBuffer(1)->bind();
+	m_pingPong[horizontal]->getColorBuffer()->bind();
 	m_screenQuad.drawTriangles();
 	m_screenQuad.unbind();
 
@@ -221,6 +309,24 @@ void Engine::generateScreenQuad()
 	m_screenQuad.storeVertices(vector<vec3>(vertices, vertices + 4));
 	m_screenQuad.storeUvs(vector<vec2>(uvs, uvs + 4));
 	m_screenQuad.storeFaces(vector<uvec3>(faces, faces + 2));
+}
+
+void Engine::generateWaterQuad()
+{
+	vec3 vertices[] = {
+		vec3( 100, 100, m_waterHeight),
+		vec3( 100,-100, m_waterHeight),
+		vec3(-100, 100, m_waterHeight),
+		vec3(-100,-100, m_waterHeight)
+	};
+
+	uvec3 faces[] = {
+		uvec3(0, 2, 1), 
+		uvec3(2, 3, 1)
+	};
+
+	m_waterQuad.storeVertices(vector<vec3>(vertices, vertices + 4));
+	m_waterQuad.storeFaces(vector<uvec3>(faces, faces + 2));
 }
 
 void Engine::generateSsaoKernel()

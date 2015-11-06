@@ -14,6 +14,7 @@ public:
 
 	mat4 getModelMatrix() const;
 	AABB getBoundingBox();
+	Mesh* getMesh();
 
 	//--  Mutators -- 
 		string	getName() { return m_name; }

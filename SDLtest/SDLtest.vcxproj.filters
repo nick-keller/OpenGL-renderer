@@ -190,6 +190,24 @@
     <None Include="blur.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="gaussian.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="gaussian.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="water.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="water.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fastRender.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fastRender.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Map.txt">
