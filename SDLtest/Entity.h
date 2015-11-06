@@ -15,8 +15,20 @@ public:
 	mat4 getModelMatrix() const;
 	AABB getBoundingBox();
 
+	//--  Mutators -- 
+		string	getName() { return m_name; }
+		void	setName(string pName) { m_name = pName; }
+		vec3	getCoordinates() { return m_coordinates; }
+		void	setCoordinates(vec3 pCoordinates) { m_coordinates = pCoordinates; }
+		vec3	getScale() { return m_scale; }
+		void	setScale(vec3 pScale) { m_scale = pScale; }
+	// --\ Mutators --
+
 private:
 	Mesh* m_mesh;
 	mat4 m_modelMatrix;
+	string m_name;
+	vec3	m_coordinates;
+	vec3	m_scale;
 };
 

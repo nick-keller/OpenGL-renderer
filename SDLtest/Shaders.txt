@@ -1,0 +1,10 @@
+LABEL simpleColor
+LABEL simpleShadow
+LABEL simpleTextured
+LABEL forceColor
+LABEL skybox
+LABEL deferredGeometry
+LABEL deferredLighting
+LABEL basic
+LABEL blur
+LABEL ssao

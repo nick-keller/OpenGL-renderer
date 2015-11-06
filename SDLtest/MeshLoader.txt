@@ -1,0 +1,12 @@
+
+LABEL	cube
+FILE	cube.obj
+SHADER	deferredGeometry
+TEXTURE	bricks
+END
+
+LABEL	sphere
+FILE	sphere.obj
+SHADER	deferredGeometry
+TEXTURE	rock
+END

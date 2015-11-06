@@ -5,11 +5,21 @@
 Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 	m_ratio(pRatio), m_angle(pAngle), m_near(pNear), m_far(pFar), m_skyboxMap("sky"), m_skybox("cube.obj")
 {
-	loadShaders();
-	loadMeshs();
 
+}
+
+void Scene::init() {
 	updateProjectionMatrix();
 	createAxis();
+
+	m_meshs["road1"] = new Mesh("road1.obj", "road");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
+
+	m_meshs["road2"] = new Mesh("road2.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road2"]);
+
+	m_meshs["road3"] = new Mesh("road3.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
 }
 
 
@@ -75,25 +85,15 @@ void Scene::loadShader(std::string pName)
 	m_shaders[pName] = new ShaderProgram(pName + ".vert", pName + ".frag");
 }
 
-void Scene::loadMeshs()
-{
-	//m_meshs["sphere"] = new Mesh("sphere.obj", "rock");
-	//m_shaderMeshs[m_shaders["simpleTextured"]].push_back(m_meshs["sphere"]);
-
-	m_meshs["cube"] = new Mesh("cube.obj", "stone");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["cube"]);
-
-	m_meshs["road1"] = new Mesh("road1.obj", "road");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
-
-	m_meshs["road2"] = new Mesh("road2.obj", "road2");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road2"]);
-
-	m_meshs["road3"] = new Mesh("road3.obj", "road2");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
+	
 
 	//m_meshs["dragon"] = new Mesh("dragon.obj");
 	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
+
+
+void Scene::addMesh(string pLabel, string pFile, string pShaderType, string pTexture) {
+	m_meshs[pLabel] = new Mesh(pFile, pTexture);
+	m_shaderMeshs[m_shaders[pShaderType]].push_back(m_meshs[pLabel]);
 }
 
 
@@ -192,6 +192,15 @@ void Scene::addEntity(string pName, mat4 pModelMatrix)
 	m_entities.push_back(entity);
 }
 
+Entity* Scene::addEntityAndRetrieve(string pName, mat4 pModelMatrix) {
+	Entity* entity = new Entity(m_meshs[pName], pModelMatrix);
+
+	m_meshEntities[m_meshs[pName]].push_back(entity);
+	m_entities.push_back(entity);
+
+	return entity;
+}
+
 vector<Entity*>* Scene::getEntities()
 {
 	return &m_entities;
@@ -200,4 +209,7 @@ vector<Entity*>* Scene::getEntities()
 mat4 Scene::getProjectionMatrix()
 {
 	return m_projectionMatrix;
+}
+MeshList Scene::getMeshList() {
+	return m_meshs;
 }

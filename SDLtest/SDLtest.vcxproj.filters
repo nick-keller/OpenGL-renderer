@@ -69,6 +69,15 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Loader.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="TBO.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -112,6 +121,15 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="TBO.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -175,5 +193,16 @@
     <None Include="blur.vert">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Map.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="MeshLoader.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
+    <Text Include="Shaders.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
   </ItemGroup>
 </Project>

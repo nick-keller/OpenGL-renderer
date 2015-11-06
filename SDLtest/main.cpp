@@ -6,6 +6,9 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "Engine.h"
+#include "SoundManager.h"
+
+void displayLoadingScreen(SDL_Surface* screen, SDL_Window* window);
 
 int WinMain()
 {
@@ -13,6 +16,7 @@ int WinMain()
 	SDL_GLContext glContext(0);
 	SDL_Event events;
 	Uint32 time(0), prevTime(0), delta(0);
+	SDL_Surface* screen;
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -34,8 +38,17 @@ int WinMain()
 	glCullFace(GL_BACK);
 	glClearColor(0, 0, 0, 1);
 
+	screen = SDL_GetWindowSurface(window);
+
 	Engine engine = Engine(desktop.w /1.5, desktop.h /1.5);
+
+	displayLoadingScreen(screen, window);
 	engine.init();
+
+	std::cout << "hello" << std::endl;
+
+	SoundManager* sm= SoundManager::Instance();
+	sm->playMusic("sounds/musics/DE_cyberpunkNight.mp3");
 
 	do
 	{
@@ -59,4 +72,15 @@ int WinMain()
 	SDL_Quit();
 
 	return 0;
+}
+
+void displayLoadingScreen(SDL_Surface* screen, SDL_Window* window) {
+
+	SDL_Rect loadingScreenPos;
+	loadingScreenPos.x = 0;
+	loadingScreenPos.y = 0;
+	auto loadingScreen = SDL_LoadBMP("loading_screen.bmp");
+	SDL_BlitSurface(loadingScreen, NULL, screen, &loadingScreenPos);
+	SDL_FreeSurface(loadingScreen);
+	SDL_UpdateWindowSurface(window);
 }
