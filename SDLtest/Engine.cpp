@@ -3,14 +3,9 @@
 
 
 Engine::Engine(int width, int height) :
-<<<<<<< HEAD
-
 	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
 	m_scene((float) width / (float) height), 
-=======
-	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)),
-	m_scene((float)width / (float)height),
->>>>>>> masterSafe
+
 	m_screen({ width, height }),
 	m_deltaX(0), m_deltaY(0),
 	m_postFx(width, height, GL_RENDERBUFFER),
@@ -72,6 +67,7 @@ void Engine::init()
 	Loader& vLoader = Loader(&m_scene);
 	vLoader.load();
 	*/
+	m_scene.init();
 	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
 	m_scene.addEntity("elbox", translate(mat4(), vec3(3.6, 0, 0)));
 	m_scene.addEntity("road2");

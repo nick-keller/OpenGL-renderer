@@ -9,19 +9,12 @@ Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 }
 
 void Scene::init() {
+	loadShaders();
+	loadMeshs();
 	updateProjectionMatrix();
 	createAxis();
-	/*
-	m_meshs["road1"] = new Mesh("road1.obj", "road");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
-
-	m_meshs["road2"] = new Mesh("road2.obj", "road2");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road2"]);
-
-	m_meshs["road3"] = new Mesh("road3.obj", "road2");
-	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
-	*/
-	}
+	
+}
 
 
 Scene::~Scene()
@@ -112,12 +105,17 @@ void Scene::loadShaders()
 	loadShader("fastRender");
 }
 
-void Scene::loadShader(std::string pName)
+void Scene::loadMeshs()
 {
-	m_shaders[pName] = new ShaderProgram(pName + ".vert", pName + ".frag");
-}
 
-	
+	m_meshs["road1"] = new Mesh("road1.obj", "road");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
+
+	m_meshs["road2"] = new Mesh("road2.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road2"]);
+
+	m_meshs["road3"] = new Mesh("road3.obj", "road2");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road3"]);
 
 	m_meshs["wood"] = new Mesh("wood.obj", "wood");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["wood"]);
@@ -127,9 +125,17 @@ void Scene::loadShader(std::string pName)
 
 	m_meshs["elbox"] = new Mesh("elbox.obj", "signs");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["elbox"]);
+}
 
-	//m_meshs["dragon"] = new Mesh("dragon.obj");
-	//m_shaderMeshs[m_shaders["simpleShadow"]].push_back(m_meshs["dragon"]);
+void Scene::loadShader(std::string pName)
+{
+	m_shaders[pName] = new ShaderProgram(pName + ".vert", pName + ".frag");
+}
+
+	
+
+
+
 
 
 void Scene::addMesh(string pLabel, string pFile, string pShaderType, string pTexture) {

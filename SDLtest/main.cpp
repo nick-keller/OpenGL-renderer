@@ -43,10 +43,8 @@ int WinMain()
 
 	Engine engine = Engine(desktop.w /1.5, desktop.h /1.5);
 
-	displayLoadingScreen(screen, window);
+	//displayLoadingScreen(screen, window);
 	engine.init();
-
-	std::cout << "hello" << std::endl;
 
 	SoundManager* sm= SoundManager::Instance();
 	sm->playMusic("sounds/musics/DE_cyberpunkNight.mp3");
