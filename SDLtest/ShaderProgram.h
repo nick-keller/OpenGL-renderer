@@ -22,6 +22,7 @@ public:
 
 	void updateUniform(string pName, Texture::Type pType);
 	void updateUniform(string pName, vec3 pVector);
+	void updateUniform(string pName, vec2 pVector);
 	void updateUniform(string pName, int pInt);
 	void updateUniform(string pName, vector<vec3> pVectorArray);
 	void updateUniform(string pName, GLboolean pBool);

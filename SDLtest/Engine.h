@@ -71,5 +71,10 @@ private:
 	Texture m_waterDuDvMap;
 	Texture m_waterNormalMap;
 	float m_waterMoveFactor;
+
+	Mesh m_rain;
+	ShaderProgram m_shaderRain;
+	Texture m_rainTexture;
+	float m_rainMoveFactor;
 };
 

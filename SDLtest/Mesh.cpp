@@ -255,6 +255,10 @@ vector<vec3> Mesh::computeTangents(vector<vec3>& pVertices, vector<vec3>& pNorma
 		vec2 delta1(pUVs[pFaces[i].y] - pUVs[pFaces[i].x]);
 		vec2 delta2(pUVs[pFaces[i].z] - pUVs[pFaces[i].x]);
 
+		if (delta1.x * delta2.y - delta2.x * delta1.y == 0) {
+			float p = 3;
+		}
+
 		float f = 1.f / (delta1.x * delta2.y - delta2.x * delta1.y);
 
 		vec3 tangent;
@@ -263,9 +267,13 @@ vector<vec3> Mesh::computeTangents(vector<vec3>& pVertices, vector<vec3>& pNorma
 		tangent.y = f * ((edge1.y * delta2.y) + (edge2.y * -delta1.y));
 		tangent.z = f * ((edge1.z * delta2.y) + (edge2.z * -delta1.y));
 
-		tangents[pFaces[i].x] += tangent;
-		tangents[pFaces[i].y] += tangent;
-		tangents[pFaces[i].z] += tangent;
+		if (f > 0) {
+			tangent *= -1;
+		}
+
+		tangents[pFaces[i].x] = tangent;
+		tangents[pFaces[i].y] = tangent;
+		tangents[pFaces[i].z] = tangent;
 	}
 
 	return tangents;

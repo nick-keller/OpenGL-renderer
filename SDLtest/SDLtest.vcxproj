@@ -195,6 +195,8 @@
     <None Include="forceColor.vert" />
     <None Include="gaussian.frag" />
     <None Include="gaussian.vert" />
+    <None Include="rain.frag" />
+    <None Include="rain.vert" />
     <None Include="simpleShadow.frag" />
     <None Include="simpleShadow.vert" />
     <None Include="simpleColor.frag" />

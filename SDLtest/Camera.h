@@ -21,6 +21,7 @@ public:
 
 	glm::mat4 getViewMatrix() const;
 	vec3 getEyePos();
+	vec2 getPosition();
 
 	void rotate(float h, float v);
 	void moveForward(float length);

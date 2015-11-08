@@ -208,6 +208,12 @@
     <None Include="fastRender.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="rain.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="rain.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Map.txt">

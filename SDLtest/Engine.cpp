@@ -3,8 +3,8 @@
 
 
 Engine::Engine(int width, int height) :
-	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)), 
-	m_scene((float) width / (float) height), 
+	m_camera(vec3(5, 5, 0), vec3(-1, -1, 0)),
+	m_scene((float)width / (float)height),
 
 	m_screen({ width, height }),
 	m_deltaX(0), m_deltaY(0),
@@ -20,11 +20,15 @@ Engine::Engine(int width, int height) :
 	m_shaderBlur("blur.vert", "blur.frag"),
 	m_shaderGaussian("gaussian.vert", "gaussian.frag"),
 	m_shaderWater("water.vert", "water.frag"),
+	m_shaderRain("rain.vert", "rain.frag"),
 	m_ssaoNoise(NULL),
 	m_waterHeight(-.05),
+	m_rain("rain.obj"),
 	m_waterDuDvMap("water_dudv.jpg", Texture::DUDV),
 	m_waterNormalMap("water_normal.jpg", Texture::NORMAL),
-	m_waterMoveFactor(0)
+	m_waterMoveFactor(0),
+	m_rainMoveFactor(0),
+	m_rainTexture("rain.jpg", Texture::DIFFUSE)
 {
 	for (int i(0); i < 5; ++i) {
 		m_keys[i] = false;
@@ -71,6 +75,7 @@ void Engine::init()
 	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
 	m_scene.addEntity("elbox", translate(mat4(), vec3(3.6, 0, 0)));
 	m_scene.addEntity("road2");
+	m_scene.addEntity("front1", rotate(translate(mat4(), vec3(-5, -3.6, 0)), -90.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(0, 3.5, 0)), 180.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-2, 3.5, 0)), 180.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-4, 3.5, 0)), 180.f, vec3(0, 0, 1)));
@@ -133,13 +138,20 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 		m_waterMoveFactor -= 1;
 	}
 
+	m_rainMoveFactor += delta / 1000.f * 0.6f;
+	if (m_rainMoveFactor >= 1) {
+		m_rainMoveFactor -= 1;
+	}
+
 	// Check collisions
+	/*
 	vector<Entity*>* entities = m_scene.getEntities();
 	for (int i(0); i < entities->size(); ++i) {
 		if (intersects(m_camera.getBoundingBox(), entities->at(i)->getBoundingBox())) {
 			m_camera.move(minDisplacement(entities->at(i)->getBoundingBox(), m_camera.getBoundingBox()));
 		}
 	}
+	*/
 }
 
 void Engine::render()
@@ -220,7 +232,8 @@ void Engine::render()
 	m_gBuffer.copyDepthTo(m_postFx);
 	m_postFx.copyColorBufferTo(m_waterRefraction);
 	m_postFx.enableDepthTest();
-	m_scene.drawAxis();
+	//m_scene.drawAxis();
+	//m_scene.drawNormals();
 
 	// Render water
 	m_shaderWater.use();
@@ -238,7 +251,24 @@ void Engine::render()
 	m_waterQuad.drawTriangles();
 	m_waterQuad.unbind();
 	m_shaderWater.stop();
+
+	// Render rain
+	m_shaderRain.use();
+	m_shaderRain.updateViewMatrix(m_camera.getViewMatrix());
+	m_shaderRain.updateProjectionMatrix(m_scene.getProjectionMatrix());
+	m_shaderRain.updateUniform("moveFactor", m_rainMoveFactor);
+	m_shaderRain.updateUniform("offset", m_camera.getPosition());
+	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
+	glDepthMask(false);
+
+	m_rain.bind();
+	m_rainTexture.bind();
+	m_rain.draw();
+	m_rain.unbind();
+
+	m_shaderRain.stop();
 	glDisable(GL_BLEND);
+	glDepthMask(true);
 
 	m_postFx.unbind();
 
@@ -275,6 +305,7 @@ void Engine::render()
 	m_screenQuad.bind();
 	m_postFx.getColorBuffer(0)->bind();
 	m_pingPong[horizontal]->getColorBuffer()->bind();
+	m_gBuffer.getColorBuffer(FBO::POSITION)->bind();
 	m_screenQuad.drawTriangles();
 	m_screenQuad.unbind();
 

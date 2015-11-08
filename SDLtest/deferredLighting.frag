@@ -81,11 +81,12 @@ void main()
 	lighting += computeLighting(light3, position, normal, toEye, oclusion);
 	lighting += computeLighting(light4, position, normal, toEye, oclusion);
 	
-	FragColor = vec4(lighting, 1) * texture(gAlbedo, texCoord0) ;
+	FragColor = vec4(lighting, 1) * texture(gAlbedo, texCoord0);
+	//FragColor = texture(gNormal, texCoord0);
 
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	
-    if(brightness > .5)
+    if(brightness > 7.5)
 		bloom = FragColor;
 	else
 		bloom = vec4(0, 0, 0, 1);

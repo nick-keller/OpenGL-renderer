@@ -23,6 +23,11 @@ vec3 Camera::getEyePos()
 	return m_position + vec3(0, 0, m_height);
 }
 
+vec2 Camera::getPosition()
+{
+	return vec2(m_position.x, m_position.y);
+}
+
 void Camera::rotate(float h, float v)
 {
 	vec3 left = cross(m_up, m_lookAt);

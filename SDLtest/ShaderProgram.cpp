@@ -137,6 +137,11 @@ void ShaderProgram::updateUniform(string pName, vec3 pVector)
 	glUniform3f(getUniformLocation(pName), pVector.x, pVector.y, pVector.z);
 }
 
+void ShaderProgram::updateUniform(string pName, vec2 pVector)
+{
+	glUniform2f(getUniformLocation(pName), pVector.x, pVector.y);
+}
+
 void ShaderProgram::updateUniform(string pName, int pInt)
 {
 	glUniform1i(getUniformLocation(pName), pInt);

@@ -19,12 +19,13 @@ vec3 computeNormal(vec2 texCoords);
 vec2 ParallaxMapping(vec3 toEye);
 
 void main() {
+	float depth = LinearizeDepth(gl_FragCoord.z);
 	vec3 toEye = normalize(vec3(0, 0, 0) - position0);
-	vec2 texCoords = ParallaxMapping(toEye);
+	vec2 texCoords = depth > 5 ? texCoord0 : ParallaxMapping(toEye);
 	vec3 normal = computeNormal(texCoords);
 	
 	gPosition.xyz = position0;
-	gPosition.a = LinearizeDepth(gl_FragCoord.z);
+	gPosition.a = depth;
 	gNormal = normal;
     gAlbedo = texture(textureDiffuse, texCoords).rgb;
 }
