@@ -128,6 +128,9 @@ void Scene::loadMeshs()
 
 	m_meshs["front1"] = new Mesh("front1.obj", "front");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["front1"]);
+
+	m_meshs["pot"] = new Mesh("pot.obj", "front");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["pot"]);
 }
 
 void Scene::loadShader(std::string pName)

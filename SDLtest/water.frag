@@ -35,7 +35,7 @@ void main() {
 	float transparency = texture(gPosition, texCoord).a  - LinearizeDepth(gl_FragCoord.z);
 	transparency = clamp(transparency * 20, 0, 1);
 
-	color = mix(texture(textureDiffuse, texCoord), texture(reflexion, vec2(1 - texCoord.x, texCoord.y)), reflectivity) + specular * .05;
+	color.rgb = mix(texture(textureDiffuse, texCoord), texture(reflexion, vec2(1 - texCoord.x, texCoord.y)), reflectivity).rgb + specular * .05;
 	color.a = transparency;
 }
 

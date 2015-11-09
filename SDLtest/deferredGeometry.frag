@@ -50,9 +50,11 @@ vec2 ParallaxMapping(vec3 toEye)
 	
 	vec2  currentTexCoords     = texCoord0;
 	float currentDepthMapValue = texture(textureBump, currentTexCoords).r;
+	int a = 0;
   
-	while(currentLayerDepth < currentDepthMapValue)
+	while(currentLayerDepth < currentDepthMapValue && a < 30)
 	{
+		a++;
 		currentTexCoords -= deltaTexCoords;
 		currentDepthMapValue = texture(textureBump, currentTexCoords).r;
 		currentLayerDepth += layerDepth;  

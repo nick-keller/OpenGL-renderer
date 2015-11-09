@@ -75,6 +75,7 @@ void Engine::init()
 	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
 	m_scene.addEntity("elbox", translate(mat4(), vec3(3.6, 0, 0)));
 	m_scene.addEntity("road2");
+	m_scene.addEntity("pot");
 	m_scene.addEntity("front1", rotate(translate(mat4(), vec3(-5, -3.6, 0)), -90.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(0, 3.5, 0)), 180.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-2, 3.5, 0)), 180.f, vec3(0, 0, 1)));
