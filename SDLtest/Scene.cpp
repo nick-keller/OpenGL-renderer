@@ -107,7 +107,6 @@ void Scene::loadShaders()
 
 void Scene::loadMeshs()
 {
-
 	m_meshs["road1"] = new Mesh("road1.obj", "road");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["road1"]);
 
@@ -123,6 +122,9 @@ void Scene::loadMeshs()
 	m_meshs["lamp"] = new Mesh("lamp.obj", "signs");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["lamp"]);
 
+	m_meshs["stop"] = new Mesh("stop.obj", "signs");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["stop"]);
+
 	m_meshs["elbox"] = new Mesh("elbox.obj", "signs");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["elbox"]);
 
@@ -131,6 +133,9 @@ void Scene::loadMeshs()
 
 	m_meshs["pot"] = new Mesh("pot.obj", "front");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["pot"]);
+
+	m_meshs["aldente"] = new Mesh("aldente.obj", "aldente");
+	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["aldente"]);
 }
 
 void Scene::loadShader(std::string pName)

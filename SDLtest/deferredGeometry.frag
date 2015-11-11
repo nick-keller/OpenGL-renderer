@@ -21,7 +21,7 @@ vec2 ParallaxMapping(vec3 toEye);
 void main() {
 	float depth = LinearizeDepth(gl_FragCoord.z);
 	vec3 toEye = normalize(vec3(0, 0, 0) - position0);
-	vec2 texCoords = depth > 5 ? texCoord0 : ParallaxMapping(toEye);
+	vec2 texCoords = depth > 10 ? texCoord0 : ParallaxMapping(toEye);
 	vec3 normal = computeNormal(texCoords);
 	
 	gPosition.xyz = position0;
@@ -42,7 +42,7 @@ vec2 ParallaxMapping(vec3 toEye)
 { 
 	toEye = inverse(TBN) * toEye;
 	
-    float numLayers = mix(30, 3, abs(dot(vec3(0, 0, 1), toEye)));
+    float numLayers = mix(30, 8, abs(dot(vec3(0, 0, 1), toEye)));
     float layerDepth = 1.0 / numLayers;
     float currentLayerDepth = 0;
     vec2 P = toEye.xy / 32; 
