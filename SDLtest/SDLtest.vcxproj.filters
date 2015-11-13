@@ -225,5 +225,8 @@
     <Text Include="Shaders.txt">
       <Filter>Fichiers de ressources</Filter>
     </Text>
+    <Text Include="ReadMe.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
   </ItemGroup>
 </Project>

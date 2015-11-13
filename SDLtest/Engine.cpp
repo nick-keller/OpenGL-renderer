@@ -67,11 +67,14 @@ Engine::~Engine()
 
 void Engine::init()
 {
-	/*
+	
+	
+	
 	Loader& vLoader = Loader(&m_scene);
 	vLoader.load();
-	*/
+	/*
 	m_scene.init();
+	
 	m_scene.addEntity("road1", translate(mat4(), vec3(-6, 0, 0)));
 	m_scene.addEntity("elbox", translate(mat4(), vec3(3.6, 0, 0)));
 	m_scene.addEntity("road2");
@@ -83,6 +86,8 @@ void Engine::init()
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-4, 3.5, 0)), 180.f, vec3(0, 0, 1)));
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-6, 3.5, 0)), 180.f, vec3(0,0,1)));
 	m_scene.addEntity("road3", translate(rotate(mat4(), 180.f, vec3(0, 0, 1)), vec3(12, 0, 0)));
+	*/
+	
 }
 
 

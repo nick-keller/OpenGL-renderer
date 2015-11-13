@@ -1,12 +1,60 @@
 
-LABEL	cube
-FILE	cube.obj
+LABEL	road1
+FILE	road1.obj
 SHADER	deferredGeometry
-TEXTURE	bricks
+TEXTURE	road
 END
 
-LABEL	sphere
-FILE	sphere.obj
+LABEL	road2
+FILE	road2.obj
 SHADER	deferredGeometry
-TEXTURE	rock
+TEXTURE	road2
+END
+
+LABEL	road3
+FILE	road3.obj
+SHADER	deferredGeometry
+TEXTURE	road2
+END
+
+LABEL	elbox
+FILE	elbox.obj
+SHADER	deferredGeometry
+TEXTURE	signs
+END
+
+LABEL	wood
+FILE	wood.obj
+SHADER	deferredGeometry
+TEXTURE	wood
+END
+
+LABEL	aldente
+FILE	aldente.obj
+SHADER	deferredGeometry
+TEXTURE	aldente
+END
+
+LABEL	front1
+FILE	front1.obj
+SHADER	deferredGeometry
+TEXTURE	front
+END
+
+LABEL	stop
+FILE	stop.obj
+SHADER	deferredGeometry
+TEXTURE	signs
+END
+
+LABEL	pot
+FILE	pot.obj
+SHADER	deferredGeometry
+TEXTURE	pot
+END
+
+LABEL	lamp
+FILE	lamp.obj
+SHADER	deferredGeometry
+TEXTURE	signs
 END

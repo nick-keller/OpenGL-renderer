@@ -9,8 +9,8 @@ Scene::Scene(double pRatio, double pAngle, double pNear, double pFar) :
 }
 
 void Scene::init() {
-	loadShaders();
-	loadMeshs();
+	//loadShaders();
+	//loadMeshs();
 	updateProjectionMatrix();
 	createAxis();
 	
@@ -128,7 +128,7 @@ void Scene::loadMeshs()
 	m_meshs["elbox"] = new Mesh("elbox.obj", "signs");
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["elbox"]);
 
-	m_meshs["front1"] = new Mesh("front1.obj", "front");
+	m_meshs["front1"] = new Mesh("front1.obj", "front");	
 	m_shaderMeshs[m_shaders["deferredGeometry"]].push_back(m_meshs["front1"]);
 
 	m_meshs["pot"] = new Mesh("pot.obj", "front");

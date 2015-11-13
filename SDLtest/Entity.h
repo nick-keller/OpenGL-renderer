@@ -14,6 +14,7 @@ public:
 
 	mat4 getModelMatrix() const;
 	AABB getBoundingBox();
+	AABB getRawBoundingBox() { return m_mesh->getRawBoundingBox(); };
 	Mesh* getMesh();
 
 	//--  Mutators -- 

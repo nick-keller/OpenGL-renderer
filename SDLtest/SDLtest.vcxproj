@@ -213,6 +213,7 @@
   <ItemGroup>
     <Text Include="Map.txt" />
     <Text Include="MeshLoader.txt" />
+    <Text Include="ReadMe.txt" />
     <Text Include="Shaders.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

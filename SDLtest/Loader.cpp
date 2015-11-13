@@ -9,8 +9,10 @@ void Loader::load() {
 
 	loadShaders	("Shaders.txt");
 	loadMeshes	("MeshLoader.txt");
-	loadMap		("Map.txt");
+	
 	m_scene->init();
+
+	loadMap("Map.txt");
 }
 
 void Loader::loadTextures(string & pFilePath) {
@@ -23,7 +25,9 @@ void Loader::loadMap(string pFilePath) {
 	string entityLabel;
 	string entityName;
 	string placement = "", refObjectName = "";
-	vec3 entityScale, entityCoordinates, entityOffset;
+	vec3 entityScale, entityCoordinates, entityOffset, rotationVector;
+	float rotationAngle = 0.0f;
+	Entity *entity;
 
 	while (getline(file, line)) {
 		if (line.empty()) {
@@ -51,13 +55,24 @@ void Loader::loadMap(string pFilePath) {
 		if (id == "PLACE") {
 			data >> placement >> refObjectName;
 		}
+		if (id == "ROT_A") {
+			data >> rotationAngle;
+		}
+		if (id == "ROT_V") {
+			data >> rotationVector.x >> rotationVector.y >> rotationVector.z;
+		}
 		if (id == "END") {
 
 			if (!placement.empty()) {
 				// Then we have a relative position for the entity.
 				placeObject(entityCoordinates, entityLabel, placement, refObjectName, entityOffset);
 			}
-			auto entity =m_scene->addEntityAndRetrieve(entityLabel, translate(scale(mat4(), entityScale), entityCoordinates));
+			if (rotationAngle != 0.0f) { // Object is rotated
+				entity = m_scene->addEntityAndRetrieve(entityLabel, rotate(translate(scale(mat4(), entityScale), entityCoordinates), rotationAngle, rotationVector));
+			}
+			else {
+				entity = m_scene->addEntityAndRetrieve(entityLabel, translate(scale(mat4(), entityScale), entityCoordinates));
+			}
 			entity->setName(entityName);
 			entity->setScale(entityScale);
 			entity->setCoordinates(entityCoordinates);
@@ -138,7 +153,7 @@ void Loader::placeObject(vec3& coordinates,string label, string placement, strin
 	for (int i(0); i < entities->size(); ++i) {
 		if (entities->at(i)->getName() == refObject) {
 			refObjectPos = entities->at(i)->getCoordinates();
-			refObjectBox = entities->at(i)->getBoundingBox();
+			refObjectBox = entities->at(i)->getRawBoundingBox();
 			refObjectScale = (entities->at(i)->getScale() - 1);
 			break;
 		}
@@ -146,41 +161,76 @@ void Loader::placeObject(vec3& coordinates,string label, string placement, strin
 
 	if (refObjectPos.null) return;
 
-	naturalOffset = vec3(1/ (refObjectPos.x+1), 
-							1/ (refObjectPos.y +1),
-							1 / (refObjectPos.z+1));
+	naturalOffset = vec3   (1 / (refObjectPos.x + 1), 
+							1 / (refObjectPos.y + 1),
+							1 / (refObjectPos.z + 1)
+							);
 
-	coordinates	   = refObjectPos;
-	coordinates.x *= (naturalOffset.x * refObjectBox.size.x);
-	coordinates.y *= (naturalOffset.y * refObjectBox.size.y);
-	coordinates.z *= (naturalOffset.z * refObjectBox.size.z);
-
+	coordinates = refObjectPos;
 
 	/**
-	We add "half cubes" to have the correct new position
+	We add "half pos" to have the correct new position
 	*/
-	if (placement == "BEFORE") { // z+
+	if (placement == "BEFORE") { // y+
+		if (coordinates.y == 0) {
+			coordinates.y *= (naturalOffset.y * refObjectBox.size.y);
+		}
+		else {
+			coordinates.y += refObjectBox.size.y * 2;
+		}
 		coordinates.y += ((1 / sum(0.5, refObjectPos.y))   * refObjectBox.size.y);
 	}
-	else if (placement == "BEHIND") { // z-
+	else if (placement == "BEHIND") { // y-
+		if (coordinates.y == 0) {
+			coordinates.y *= (naturalOffset.y * refObjectBox.size.y);
+		}
+		else {
+			coordinates.y += refObjectBox.size.y * 2;
+		}
 		coordinates.y -= ((1 / sum(0.5, refObjectPos.y))   * refObjectBox.size.y);
 	}
 	else if (placement == "LEFT") { // x-
+		if (coordinates.x == 0) {
+			coordinates.x *= (naturalOffset.x * refObjectBox.size.x);
+		}
+		else {
+			coordinates.x += refObjectBox.size.x * 2;
+		}
 		coordinates.x -= ((1 / sum(0.5, refObjectPos.x))   *refObjectBox.size.x) ;
 	}
 	else if (placement == "RIGHT") { // x+
+		if (coordinates.x == 0) {
+			coordinates.x *= (naturalOffset.x * refObjectBox.size.x);
+		}
+		else {
+			coordinates.x += refObjectBox.size.x * 2;
+		}
 		coordinates.x += ((1 / sum(0.5, refObjectPos.x))   * refObjectBox.size.x) ;
 	}
-	else if (placement == "UNDER") { // y-
+	else if (placement == "UNDER") { // z-
+		if (coordinates.z == 0) {
+			coordinates.z *= (naturalOffset.z * refObjectBox.size.z);
+		}
+		else {
+			coordinates.z += refObjectBox.size.z * 2;
+		}
 		coordinates.z -= ((1 / sum(0.5, refObjectPos.z))   * refObjectBox.size.z);
 	}
-	else if (placement == "ABOVE") { // y+
+	else if (placement == "ABOVE") { // z+
+		if (coordinates.z == 0) {
+			coordinates.z *= (naturalOffset.z * refObjectBox.size.z);
+		}
+		else {
+			coordinates.z += refObjectBox.size.z * 2;
+		}
 		coordinates.z += ( (1 / sum(0.5, refObjectPos.z)) * refObjectBox.size.z );
 	}
 
-	//offset -= 0.5;
-
+	coordinates.x = (int)coordinates.x;
+	coordinates.y = (int)coordinates.y;
+	coordinates.z = (int)coordinates.z;
 	coordinates += offset;
+
 }
 
 double Loader::sum(double val, double n) {
