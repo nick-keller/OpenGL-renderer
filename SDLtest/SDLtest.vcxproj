@@ -189,6 +189,7 @@
     <None Include="deferredLighting.vert" />
     <None Include="deferredGeometry.frag" />
     <None Include="deferredGeometry.vert" />
+    <None Include="deferredLighting2.frag" />
     <None Include="fastRender.frag" />
     <None Include="fastRender.vert" />
     <None Include="forceColor.frag" />

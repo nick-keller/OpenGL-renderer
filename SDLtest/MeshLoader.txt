@@ -58,3 +58,9 @@ FILE	lamp.obj
 SHADER	deferredGeometry
 TEXTURE	signs
 END
+
+LABEL	cube
+FILE	cube.obj
+SHADER	deferredGeometry
+TEXTURE	bricks
+END

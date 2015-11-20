@@ -15,7 +15,7 @@ Engine::Engine(int width, int height) :
 	m_waterReflexion(width, height, GL_RENDERBUFFER),
 	m_waterRefraction(width, height),
 	m_shaderFx("basic.vert", "basic.frag"),
-	m_shaderLighting("deferredLighting.vert", "deferredLighting.frag"),
+	m_shaderLighting("deferredLighting.vert", "deferredLighting2.frag"),
 	m_shaderSsao("ssao.vert", "ssao.frag"),
 	m_shaderBlur("blur.vert", "blur.frag"),
 	m_shaderGaussian("gaussian.vert", "gaussian.frag"),
@@ -87,7 +87,7 @@ void Engine::init()
 	m_scene.addEntity("lamp", rotate(translate(mat4(), vec3(-6, 3.5, 0)), 180.f, vec3(0,0,1)));
 	m_scene.addEntity("road3", translate(rotate(mat4(), 180.f, vec3(0, 0, 1)), vec3(12, 0, 0)));
 	*/
-	
+	m_toggleCollision = false;
 }
 
 
@@ -97,6 +97,13 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 	switch (events.type)
 	{
 	case SDL_KEYDOWN:
+		switch (events.key.keysym.scancode)
+		{
+			case SDL_SCANCODE_F:
+				m_toggleCollision = ( (events.type == SDL_KEYDOWN) == m_toggleCollision ) ? false : true ;
+			break;
+		}
+
 	case SDL_KEYUP:
 
 		switch (events.key.keysym.scancode)
@@ -120,6 +127,7 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 		case SDL_SCANCODE_C:
 			m_camera.setCrouched(events.type == SDL_KEYDOWN);
 			break;
+
 		}
 
 		break;
@@ -151,14 +159,15 @@ void Engine::update(Uint32 delta, SDL_Event& events)
 	}
 
 	// Check collisions
-	/*
-	vector<Entity*>* entities = m_scene.getEntities();
-	for (int i(0); i < entities->size(); ++i) {
-		if (intersects(m_camera.getBoundingBox(), entities->at(i)->getBoundingBox())) {
-			m_camera.move(minDisplacement(entities->at(i)->getBoundingBox(), m_camera.getBoundingBox()));
+	if (m_toggleCollision) {
+		vector<Entity*>* entities = m_scene.getEntities();
+		for (int i(0); i < entities->size(); ++i) {
+			if (intersects(m_camera.getBoundingBox(), entities->at(i)->getBoundingBox())) {
+				m_camera.move(minDisplacement(entities->at(i)->getBoundingBox(), m_camera.getBoundingBox()));
+			}
 		}
 	}
-	*/
+	
 }
 
 void Engine::render()

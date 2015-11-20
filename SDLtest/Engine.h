@@ -45,6 +45,7 @@ private:
 	int m_xRel, m_yRel;
 	int m_deltaX, m_deltaY;
 	Size m_screen;
+	bool m_toggleCollision;
 
 	FBO m_gBuffer;
 	VAO m_screenQuad;
